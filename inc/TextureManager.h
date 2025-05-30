@@ -59,15 +59,16 @@ public:
         return true;
     }
 
-    void drawTexture(const std::string& id, SDL_Renderer* renderer, int x, int y, int width, int height){
+    void drawTexture(const std::string& id, SDL_Renderer* renderer, int x, int y, int width, int height, SDL_Rect* rect = nullptr) {
         if (textureMap.find(id) != textureMap.end()){
             SDL_Texture* texture = textureMap[id];
             SDL_Rect destRect = {x, y, width, height};
-            SDL_RenderCopy(renderer, texture, nullptr, &destRect);
+            SDL_RenderCopy(renderer, texture, rect, &destRect);
         } else {
             SDL_Log("Texture with ID '%s' not found", id.c_str());
         }
     }
+
 
     void clearAllTextures() {
         for (auto& pair : textureMap) {

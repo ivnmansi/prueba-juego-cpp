@@ -1,6 +1,7 @@
 #include <SDL2/SDL.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <time.h>
 
 #include "inc/Entity.h"
 #include "inc/Player.h"
@@ -14,6 +15,8 @@
 TextureManager* TextureManager::instance = nullptr;
 
 int main(int argc, char** argv){
+
+    srand(time(NULL));
 
     /* INIT VIDEO SYSTEM */
     if(SDL_Init(SDL_INIT_VIDEO) < 0){
@@ -56,6 +59,7 @@ int main(int argc, char** argv){
         || !textureManager->loadTexture("player_down_right", "img/player_down_right.bmp", renderer)
         || !textureManager->loadTexture("player_up_left", "img/player_up_left.bmp", renderer)
         || !textureManager->loadTexture("player_up_right", "img/player_up_right.bmp", renderer)
+        || !textureManager->loadTexture("tile_texture1", "img/tilemaptest.bmp", renderer)
     ) {
         printf("Error: Failed to load texture\nSDL Error: '%s'\n", SDL_GetError());
         SDL_DestroyRenderer(renderer);
@@ -66,9 +70,13 @@ int main(int argc, char** argv){
 
     // Cargar tilemap (prueba)
     TileMap* tileMap = TileMap::getInstance();
-    // tiles de prueba
-    tileMap->setTile(0, 0, 1);
-    tileMap->setTile(2, 0, 2);
+    // tiles de prueba aleatorios
+    for(int i=0; i < GRID_WIDTH; i++){
+        for(int j=0; j < GRID_HEIGHT; j++){
+            int random = rand() % TILE_TYPE_NUM;
+            tileMap->setTile(i, j, random);
+        }
+    }
 
     // cargar jugador
     Player* player = Player::getInstance();
