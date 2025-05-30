@@ -4,7 +4,9 @@
 
 #include "inc/Entity.h"
 #include "inc/Player.h"
+#include "inc/Object.h"
 #include "inc/TextureManager.h"
+#include "inc/TileMap.h"
 
 #define SCREEN_WIDTH 1280 
 #define SCREEN_HEIGHT 720
@@ -62,8 +64,17 @@ int main(int argc, char** argv){
         return -1;
     }
 
+    // Cargar tilemap (prueba)
+    TileMap* tileMap = TileMap::getInstance();
+    // tiles de prueba
+    tileMap->setTile(0, 0, 1);
+    tileMap->setTile(2, 0, 2);
+
     // cargar jugador
     Player* player = Player::getInstance();
+
+    // prueba objeto (rectangulo)
+    Object* object = new Object(1, "Test Object", 100, 100, 50, 50, "player_down");
 
 
     /*-------------------*/
@@ -108,11 +119,16 @@ int main(int argc, char** argv){
 
 
        // Limpiar pantalla y establecer el color del fondo (blanco)
-        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // Color blanco
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Color blanco
         SDL_RenderClear(renderer);
+
+        // Renderizar el tilemap
+        tileMap->render(renderer);
 
         // Renderizar la textura en la posición del sprite
         player->render(renderer);
+        // Renderizar el objeto
+        object->render(renderer);
 
         // Actualizar la pantalla
         SDL_RenderPresent(renderer);

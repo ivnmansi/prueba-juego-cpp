@@ -1,3 +1,6 @@
+#ifndef PLAYER_H
+#define PLAYER_H
+
 #include "Entity.h"
 
 
@@ -35,34 +38,10 @@ class Player : public Entity {
             return instance;
         }
 
-        void move(int dx, int dy){
-            Entity::move(dx, dy);
+        void move(int dx, int dy);
 
-            if(dx > 0 && dy == 0){
-                setTextureID("player_right");
-            }
-            else if(dx < 0 && dy == 0){
-                setTextureID("player_left");
-            }
-            else if(dy > 0 && dx == 0){
-                setTextureID("player_down");
-            }
-            else if(dy < 0 && dx == 0){
-                setTextureID("player_up");
-            }
-            else if(dx > 0 && dy > 0){
-                setTextureID("player_down_right");
-            }
-            else if(dx < 0 && dy > 0){
-                setTextureID("player_down_left");
-            }
-            else if(dx > 0 && dy < 0){
-                setTextureID("player_up_right");
-            }
-            else if(dx < 0 && dy < 0){
-                setTextureID("player_up_left");
-            }
-        }
 
         
 };
+
+#endif

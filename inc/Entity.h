@@ -4,6 +4,7 @@
 #include <SDL2/SDL.h>
 #include <cstring>
 #include <string>
+#include <map>
 
 #include "TextureManager.h"
 
@@ -43,6 +44,7 @@ class Hitbox{
         int getY() { return y; }
         int getWidth() { return width; }
         int getHeight() { return height; }
+        SDL_Rect getRect() { return rect; }
 
         void setX(int _x) { x = _x; rect.x = x; }
         void setY(int _y) { y = _y; rect.y = y; }
@@ -61,12 +63,23 @@ class Hitbox{
  * 
  */
 class Entity{
+private:
+    int id;
+    std::string name;
+    int x, y;
+    int width, height;
+    int speed;
+    Hitbox hitbox;
+    SDL_Texture* texture;
+    std::string textureID;
+    int health;
+
 public:
     /**
      * @brief Construct a new Entity object
      * 
      */
-    Entity() : id(0), name(nullptr), x(0), y(0), width(0), height(0), speed(0), textureID(nullptr), health(100) {
+    Entity() : id(0), name(nullptr), x(0), y(0), width(0), height(0), speed(0), textureID(""), health(100) {
         hitbox = Hitbox();
     }
 
@@ -74,11 +87,8 @@ public:
      * @brief Construct a new Entity object
      * 
      */
-    Entity(int _id, const char* _name, int _x, int _y, int _width, int _height, int _speed, int _health, std::string _textureID)
-        : id(_id), x(_x), y(_y), width(_width), height(_height), speed(_speed), health(_health), textureID(_textureID){
-        name = new char[strlen(_name) + 1];
-        strcpy(name, _name);
-        
+    Entity(int _id, std::string _name, int _x, int _y, int _width, int _height, int _speed, int _health, std::string _textureID)
+        : id(_id), name(_name), x(_x), y(_y), width(_width), height(_height), speed(_speed), health(_health), textureID(_textureID){
         hitbox = Hitbox(x, y, width, height);
     }
 
@@ -87,9 +97,6 @@ public:
      * 
      */
     ~Entity() {
-        if (name != nullptr) {
-            delete[] name;
-        }
         if (texture != nullptr) {
             SDL_DestroyTexture(texture);
         }
@@ -97,14 +104,16 @@ public:
 
     /** GETTERS & SETTERS */
     int getId() {return id; }
-    const char* getName() { return name; }
+    const std::string& getName() { return name; }
     int getX() { return x; }
     int getY() { return y; }
     int getWidth() { return width; }
     int getHeight() { return height; }
     int getSpeed() { return speed; }
     int getHealth() { return health; }
+    Hitbox& getHitbox() { return hitbox; }
 
+    void setId(int _id) { id = _id; }
     void setX(int _x){x = _x;hitbox.setX(_x);}
     void setY(int _y){y = _y;hitbox.setY(_y);}
     void setTextureID(const std::string& _textureID) { textureID = _textureID; }
@@ -127,17 +136,46 @@ public:
             TextureManager::getInstance()->drawTexture(getTextureID(), renderer, getX(), getY(), getWidth(), getHeight());
         }
     }
+};
 
-private:
-    int id;
-    char* name;
-    int x, y;
-    int width, height;
-    int speed;
-    Hitbox hitbox;
-    SDL_Texture* texture;
-    std::string textureID;
-    int health;
+class EntityManager {
+    private:
+        static EntityManager* instance;
+        EntityManager() = default;
+
+        std::map<int, Entity> entityMap;
+    
+    public:
+        ~EntityManager() {
+            entityMap.clear();
+        }
+
+        static EntityManager* getInstance(){
+            if (instance == nullptr) {
+                instance = new EntityManager();
+            }
+            return instance;
+        }
+
+        void addEntity(Entity& entity) {
+            int id = entity.getId();
+            if (entityMap.find(id) == entityMap.end()) {
+                entityMap[id] = std::move(entity);
+            } else {
+                id = entityMap.size() + 1; // Generar un nuevo ID si ya existe
+                entityMap[id] = std::move(entity);
+            }
+        }
+
+        Entity* getEntity(int id) {
+            if (entityMap.find(id) != entityMap.end()) {
+                return &entityMap[id];
+            }
+            return nullptr; // Retorna nullptr si no se encuentra la entidad
+        }
+
+
+
 };
 
 #endif
