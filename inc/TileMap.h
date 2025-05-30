@@ -5,10 +5,12 @@
 #include "TextureManager.h"
 #include "Player.h"
 #include "Object.h"
+#include "Config.h"
 
-#define GRID_WIDTH 32
-#define GRID_HEIGHT 32
-#define TILE_SIZE 32
+
+#define GRID_HEIGHT 20
+#define TILE_SIZE ((int)(SCREEN_HEIGHT / GRID_HEIGHT))
+#define GRID_WIDTH ((int)(SCREEN_WIDTH / TILE_SIZE))
 
 #define TILE_TYPE_NUM 3
 
@@ -94,7 +96,7 @@ class TileMap {
             for (int y = 0; y < GRID_HEIGHT; ++y) {
                 Tile* tile = &grid[x][y];
                 if(tile->id >= 0 && tile->id < TILE_TYPE_NUM){
-                    SDL_Rect sheet = {TILE_SIZE * tile->id, 0, TILE_SIZE, TILE_SIZE};
+                    SDL_Rect sheet = {32 * tile->id, 0, 32, 32};
                     TextureManager::getInstance()->drawTexture(
                         tileTexureID,
                         renderer,

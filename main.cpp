@@ -8,9 +8,8 @@
 #include "inc/Object.h"
 #include "inc/TextureManager.h"
 #include "inc/TileMap.h"
+#include "inc/Config.h"
 
-#define SCREEN_WIDTH 1280 
-#define SCREEN_HEIGHT 720
 
 TextureManager* TextureManager::instance = nullptr;
 
