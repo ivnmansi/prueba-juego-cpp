@@ -16,7 +16,7 @@ for %%f in (src\*.cpp) do (
 )
 
 echo Linking...
-g++ obj\*.o -LC:\msys64\mingw64\lib\sdl2 -lmingw32 -lSDL2main -lSDL2 -o game.exe
+g++ obj\*.o -LC:\msys64\mingw64\lib\sdl2 -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -o game.exe
 if %errorlevel% neq 0 goto error
 
 echo === Build successful! ===

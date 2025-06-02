@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <time.h>
+#include <windows.h>
 
 #include "inc/Entity.h"
 #include "inc/Player.h"
@@ -20,6 +21,11 @@ int main(int argc, char** argv){
     /* INIT VIDEO SYSTEM */
     if(SDL_Init(SDL_INIT_VIDEO) < 0){
         printf("Error: SDL failed to initialize\nSDL Error: '%s'\n", SDL_GetError());
+        return 1;
+    }
+    if(!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)){
+        printf("Error: SDL_image failed to initialize\nSDL Error: '%s'\n", IMG_GetError());
+        SDL_Quit();
         return 1;
     }
 
@@ -45,22 +51,9 @@ int main(int argc, char** argv){
     }
 
     /*------------------*/
-    // Cargar textura del jugador (prueba)
-    // * Hacer menos tediosa la carga de texturas después
-    // * Ver como usar spritesheets
+    // Cargar todas las texturas
     TextureManager* textureManager = TextureManager::getInstance();
-    if (
-        !textureManager->loadTexture("player_down", "img/player_down.bmp", renderer)
-        || !textureManager->loadTexture("player_up", "img/player_up.bmp", renderer)
-        || !textureManager->loadTexture("player_left", "img/player_left.bmp", renderer)
-        || !textureManager->loadTexture("player_right", "img/player_right.bmp", renderer)
-        || !textureManager->loadTexture("player_down_left", "img/player_down_left.bmp", renderer)
-        || !textureManager->loadTexture("player_down_right", "img/player_down_right.bmp", renderer)
-        || !textureManager->loadTexture("player_up_left", "img/player_up_left.bmp", renderer)
-        || !textureManager->loadTexture("player_up_right", "img/player_up_right.bmp", renderer)
-        || !textureManager->loadTexture("tile_texture1", "img/tilemaptest.bmp", renderer)
-    ) {
-        printf("Error: Failed to load texture\nSDL Error: '%s'\n", SDL_GetError());
+    if (!textureManager->loadTexturesFromDirectory("img", renderer)) {
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
         SDL_Quit();
@@ -150,7 +143,10 @@ int main(int argc, char** argv){
     textureManager->clearAllTextures();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
+    IMG_Quit();
     SDL_Quit();
+
+    
 
     return 0;
 }

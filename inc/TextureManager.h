@@ -2,19 +2,12 @@
 #define TEXTURE_MANAGER_H
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include <string>
 #include <map>
+#include <filesystem>
+#include <fstream>
 
-class Animation{
-private:
-    int currentFrame; // Current frame of the animation
-    int frameCount; // Total number of frames in the animation
-    int frameDelay; // Delay between frames in milliseconds
-    bool loop; // does it loop?
-
-public:
-
-};
 
 class TextureManager {
 private:
@@ -41,7 +34,7 @@ public:
      * @return true if the texture was loaded successfully, false otherwise
      */
     bool loadTexture(const std::string& id, const std::string& filePath, SDL_Renderer* renderer) {
-        SDL_Surface* surface = SDL_LoadBMP(filePath.c_str());
+        SDL_Surface* surface = IMG_Load(filePath.c_str());
         if (!surface) {
             SDL_Log("Failed to load image %s: %s", filePath.c_str(), SDL_GetError());
             return false;
@@ -75,6 +68,32 @@ public:
             SDL_DestroyTexture(pair.second);
         }
         textureMap.clear();
+    }
+
+    bool loadTexturesFromDirectory(std::string directory, SDL_Renderer* renderer){
+        SDL_Log("Loading textures...");
+        
+        bool foundAnyTextures = false;
+        
+        for(auto& entry : std::filesystem::directory_iterator(directory)){
+            std::string extension = entry.path().extension().string();
+            if(!entry.is_regular_file() || (extension != ".png" && extension != ".jpg" && extension != ".jpeg" && extension != ".bmp")){
+                continue;
+            }
+            std::string filePath = entry.path().string();
+            std::string textureID = entry.path().stem().string();
+            if(!loadTexture(textureID, filePath, renderer)){
+                SDL_Log("Failed to load texture: %s", filePath.c_str());
+                return false;
+            }
+            foundAnyTextures = true;
+        }
+        if (!foundAnyTextures) {
+            SDL_Log("No textures found in directory: %s", directory.c_str());
+        }
+        
+        SDL_Log("Textures loaded successfully");
+        return true;
     }
 
 
