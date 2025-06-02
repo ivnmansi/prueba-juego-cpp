@@ -10,7 +10,7 @@
 
 #define GRID_HEIGHT 20
 #define TILE_SIZE ((int)(SCREEN_HEIGHT / GRID_HEIGHT))
-#define GRID_WIDTH ((int)(SCREEN_WIDTH / TILE_SIZE))
+#define GRID_WIDTH 20
 
 #define TILE_TYPE_NUM 3
 
@@ -28,14 +28,19 @@ typedef struct {
 
 class TileMap {
   private:
+    // map grid dimensions
     Tile grid[GRID_WIDTH][GRID_HEIGHT];
+
+    // map name and tile texture ID
     std::string mapName;
+    std::string tileTextureID;
+    
     const TileType tileTypes[TILE_TYPE_NUM] = {
         {"void", COLLISION_FALSE},
         {"grass", COLLISION_FALSE},
         {"rock", COLLISION_TRUE},
     };
-    std::string tileTexureID;
+
 
     static TileMap* instance;
     TileMap() {
@@ -46,7 +51,7 @@ class TileMap {
             }
         }
         mapName = "default_map";
-        tileTexureID = "tile_texture1";
+        tileTextureID = "tile_texture1";
     }
 
   public:
@@ -84,10 +89,10 @@ class TileMap {
     }
 
     void setTileTextureID(const std::string& textureID) {
-        tileTexureID = textureID;
+        tileTextureID = textureID;
     }
     std::string getTileTextureID() const {
-        return tileTexureID;
+        return tileTextureID;
     }
 
 
@@ -98,7 +103,7 @@ class TileMap {
                 if(tile->id >= 0 && tile->id < TILE_TYPE_NUM){
                     SDL_Rect sheet = {32 * tile->id, 0, 32, 32};
                     TextureManager::getInstance()->drawTexture(
-                        tileTexureID,
+                        tileTextureID,
                         renderer,
                         x * TILE_SIZE,
                         y * TILE_SIZE,
@@ -110,6 +115,47 @@ class TileMap {
             }
         }
     }
+
+    void loadMapFromFile(std::string filePath, SDL_Renderer* renderer){
+        std::ifstream file(filePath);
+        if(!file.is_open()){
+            SDL_Log("Failed to open map file: %s", filePath.c_str());
+            return;
+        }
+
+        // leer nombre del mapa
+        if(std::getline(file, mapName)){
+            SDL_Log("Loading map %s...", mapName.c_str());
+        }
+        // leer ID de textura del tile (la textura ya deberia estar cargada)
+        if(!std::getline(file, tileTextureID)){
+            SDL_Log("Failed to read tile texture ID from map file: %s", filePath.c_str());
+        }
+
+        // leer grid de tiles
+        int i = 0;
+        std::string line;
+        SDL_Log("Reading tile grid from file...");
+
+        while(std::getline(file, line)){
+            std::stringstream lineStream(line);
+            int tileID;
+            int j = 0;
+
+            while(lineStream >> tileID && j < GRID_WIDTH) {
+                if(tileID < 0 || tileID >= TILE_TYPE_NUM){
+                    SDL_Log("Invalid tile ID %d at position (%d, %d) in map file: %s", tileID, j, i, filePath.c_str());
+                    tileID = 0;
+                }
+                setTile(j, i, tileID);
+                j++;
+            }
+            i++;
+        }
+        SDL_Log("Map %s loaded successfully", mapName.c_str());
+        file.close();
+    }
+
 };
 
 

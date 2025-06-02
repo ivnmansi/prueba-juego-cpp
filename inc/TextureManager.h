@@ -86,6 +86,7 @@ public:
                 SDL_Log("Failed to load texture: %s", filePath.c_str());
                 return false;
             }
+            SDL_Log("Loaded texture: %s", filePath.c_str());
             foundAnyTextures = true;
         }
         if (!foundAnyTextures) {

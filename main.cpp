@@ -60,15 +60,11 @@ int main(int argc, char** argv){
         return -1;
     }
 
-    // Cargar tilemap (prueba)
+    // Cargar tilemap
     TileMap* tileMap = TileMap::getInstance();
-    // tiles de prueba aleatorios
-    for(int i=0; i < GRID_WIDTH; i++){
-        for(int j=0; j < GRID_HEIGHT; j++){
-            int random = rand() % TILE_TYPE_NUM;
-            tileMap->setTile(i, j, random);
-        }
-    }
+    // mapa de prueba
+    tileMap->loadMapFromFile("data/testmap.map", renderer);
+    SDL_Log("nombre del mapa: %s", tileMap->getMapName().c_str());
 
     // cargar jugador
     Player* player = Player::getInstance();
