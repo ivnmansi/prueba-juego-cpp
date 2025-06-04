@@ -48,6 +48,7 @@ class TileMap {
     // map name and tile texture ID
     std::string mapName;
     std::string tileTextureID;
+    std::string mapBackground;
     
     // dictionary of tile types
     const TileType tileTypes[TILE_TYPE_NUM] = {
@@ -66,6 +67,7 @@ class TileMap {
         }
         mapName = "NULL_map";
         tileTextureID = "collition_tiles";
+        mapBackground = "NULL";
     }
 
   public:
@@ -110,19 +112,29 @@ class TileMap {
     }
 
 
-    void render(SDL_Renderer* renderer) {
-        for (int x = 0; x < GRID_WIDTH; ++x) {
-            for (int y = 0; y < GRID_HEIGHT; ++y) {
-                Tile* tile = &grid[x][y];
-                if(tile->id >= 0 && tile->id < TILE_TYPE_NUM){
-                    SDL_Rect sheet = {32 * tile->id, 0, 32, 32};
-                    TextureManager::getInstance()->drawTexture(
-                        tileTextureID,
-                        renderer,
-                        Vector2D(x * TILE_SIZE, y * TILE_SIZE),
-                        Vector2D(TILE_SIZE, TILE_SIZE),
-                        &sheet
-                    );
+    void render(SDL_Renderer* renderer, bool debugMode) {
+
+        TextureManager::getInstance()->drawTexture(
+            mapBackground,
+            renderer,
+            Vector2D(0, 0),
+            Vector2D(TILE_SIZE * GRID_WIDTH, TILE_SIZE * GRID_HEIGHT)
+        );
+
+        if(debugMode){
+            for (int x = 0; x < GRID_WIDTH; ++x) {
+                for (int y = 0; y < GRID_HEIGHT; ++y) {
+                    Tile* tile = &grid[x][y];
+                    if(tile->id >= 0 && tile->id < TILE_TYPE_NUM){
+                        SDL_Rect sheet = {32 * tile->id, 0, 32, 32};
+                        TextureManager::getInstance()->drawTexture(
+                            tileTextureID,
+                            renderer,
+                            Vector2D(x * TILE_SIZE, y * TILE_SIZE),
+                            Vector2D(TILE_SIZE, TILE_SIZE),
+                            &sheet
+                        );
+                    }
                 }
             }
         }
@@ -139,7 +151,10 @@ class TileMap {
         if(std::getline(file, mapName)){
             SDL_Log("Loading map %s...", mapName.c_str());
         }
-
+        // leer ID del fondo del mapa
+        if(std::getline(file, mapBackground)){
+            SDL_Log("Map background: %s", tileTextureID.c_str());
+        }
         // leer grid de tiles
         int i = 0;
         std::string line;

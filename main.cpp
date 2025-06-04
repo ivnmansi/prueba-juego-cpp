@@ -120,10 +120,8 @@ int main(int argc, char** argv){
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Color blanco
         SDL_RenderClear(renderer);
 
-        if(debug_mode){
-            tileMap->render(renderer);
-        }
-
+        
+        tileMap->render(renderer, debug_mode);
         // Renderizar la textura en la posición del sprite
         player->render(renderer);
 

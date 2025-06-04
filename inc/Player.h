@@ -22,7 +22,7 @@ class Player : public Entity {
             std::string("player_down")  // TEXTURE ID
         ) {
             health = 100;               // HEALTH
-            speed = 5;                  // SPEED
+            speed = 4;                  // SPEED
         }
 
         static Player* instance;
