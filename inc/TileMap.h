@@ -3,12 +3,11 @@
 
 #include "Entity.h"
 #include "TextureManager.h"
-#include "Player.h"
 #include "Config.h"
 
 
-#define GRID_HEIGHT 20
-#define TILE_SIZE ((int)(SCREEN_HEIGHT / GRID_HEIGHT))
+#define GRID_HEIGHT 10
+#define TILE_SIZE 40
 #define GRID_WIDTH 20
 
 #define TILE_TYPE_NUM 3
@@ -34,12 +33,10 @@ enum TriggerType {
 typedef struct {
     std::string name;
     enum CollisionType collisionType;
-    enum TriggerType triggerType;
 } TileType;
 
 typedef struct {
     int id;
-    enum CollisionType collisionType;
     enum TriggerType triggerType;
 } Tile;
 
@@ -52,10 +49,10 @@ class TileMap {
     std::string mapName;
     std::string tileTextureID;
     
+    // dictionary of tile types
     const TileType tileTypes[TILE_TYPE_NUM] = {
-        {"void", COLLISION_FALSE},
-        {"grass", COLLISION_FALSE},
-        {"rock", COLLISION_TRUE},
+        {"collidable", COLLISION_TRUE},
+        {"walkable", COLLISION_FALSE},
     };
 
 
@@ -67,8 +64,8 @@ class TileMap {
                 grid[x][y].id = 0;
             }
         }
-        mapName = "default_map";
-        tileTextureID = "tile_texture1";
+        mapName = "NULL_map";
+        tileTextureID = "collition_tiles";
     }
 
   public:
@@ -84,14 +81,14 @@ class TileMap {
             grid[x][y].id = id;
         }
     }
-    Tile getTile(int x, int y) {
+    const Tile getTile(int x, int y) const {
         if (x >= 0 && x < GRID_WIDTH && y >= 0 && y < GRID_HEIGHT) {
             return grid[x][y];
         }
         return {0};
     }
 
-    TileType getTileType(int id) {
+    const TileType getTileType(int id) const {
         if (id >= 0 && id < TILE_TYPE_NUM) {
             return tileTypes[id];
         }
@@ -141,10 +138,6 @@ class TileMap {
         // leer nombre del mapa
         if(std::getline(file, mapName)){
             SDL_Log("Loading map %s...", mapName.c_str());
-        }
-        // leer ID de textura del tile (la textura ya deberia estar cargada)
-        if(!std::getline(file, tileTextureID)){
-            SDL_Log("Failed to read tile texture ID from map file: %s", filePath.c_str());
         }
 
         // leer grid de tiles

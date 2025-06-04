@@ -9,11 +9,9 @@ Player* Player::instance = nullptr;
  * @param dy 
  */
 void Player::move(Vector2D& direction){
-
-    if(direction.magnitude() > 0.0f){
-        setPosition(getPosition() + direction.normalize() * speed);
-    }
-
+    
+    Entity::move(direction, speed);
+    
     if(direction.x > 0 && direction.y == 0){
         setTextureID("player_right");
     }

@@ -61,6 +61,7 @@ int main(int argc, char** argv){
 
     // Cargar tilemap
     TileMap* tileMap = TileMap::getInstance();
+    bool debug_mode = false;
     // mapa de prueba
     tileMap->loadMapFromFile("data/testmap.map", renderer);
     SDL_Log("nombre del mapa: %s", tileMap->getMapName().c_str());
@@ -83,6 +84,9 @@ int main(int argc, char** argv){
         while (SDL_PollEvent(&e) != 0) {
             if (e.type == SDL_QUIT) {
                 quit = 1;
+            }
+            if (e.type == SDL_KEYDOWN && keyState[SDL_SCANCODE_M]) {
+                debug_mode = !debug_mode;
             }
         }
 
@@ -109,14 +113,16 @@ int main(int argc, char** argv){
         // Mover el jugador
         player->move(direction);
 
+        
 
 
        // Limpiar pantalla y establecer el color del fondo (blanco)
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Color blanco
         SDL_RenderClear(renderer);
 
-        // Renderizar el tilemap
-        tileMap->render(renderer);
+        if(debug_mode){
+            tileMap->render(renderer);
+        }
 
         // Renderizar la textura en la posición del sprite
         player->render(renderer);

@@ -25,8 +25,6 @@ class Player : public Entity {
             speed = 5;                  // SPEED
         }
 
-        Player(const Player&) = delete;
-        Player& operator=(const Player&) = delete;
         static Player* instance;
 
         
@@ -45,6 +43,10 @@ class Player : public Entity {
         }
 
         void move(Vector2D& direction);
+
+        void render(SDL_Renderer* renderer) {
+            Entity::render(renderer);
+        }
 
 
         

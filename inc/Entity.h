@@ -8,6 +8,8 @@
 
 #include "Vector2D.h"
 #include "TextureManager.h"
+#include "Collision.h"
+#include "TileMap.h"
 
 /**
  * @brief Class representing a hitbox for collision detection
@@ -24,11 +26,11 @@ class Hitbox{
         }
 
         /** GETTERS & SETTERS */
-        int getX() { return position.x; }
-        int getY() { return position.y; }
+        const int getX() const { return position.x; }
+        const int getY() const { return position.y; }
 
-        int getWidth() { return size.x; }
-        int getHeight() { return size.y; }
+        const int getWidth() const { return size.x; }
+        const int getHeight() const { return size.y; }
         SDL_Rect getRect() { return rect; }
 
         void setPosition(const Vector2D& _position){
@@ -55,6 +57,9 @@ class Hitbox{
  * @brief Class representing an entity in the game
  * 
  */
+
+class EntityManager;
+
 class Entity{
 private:
     int id;
@@ -63,6 +68,7 @@ private:
     Vector2D size;
     std::string textureID;
     Hitbox hitbox;
+
 
 public:
     /**
@@ -85,9 +91,9 @@ public:
     /** GETTERS & SETTERS */
     int getId() {return id; }
     const std::string& getName() { return name; }
-    Vector2D& getPosition() { return position; }
-    Vector2D& getSize() { return size; }
-    Hitbox& getHitbox() { return hitbox; }
+    const Vector2D& getPosition() const { return position; }
+    const Vector2D& getSize() const { return size; }
+    const Hitbox& getHitbox() const { return hitbox; }
     std::string getTextureID() const {
         return textureID;
     }
@@ -97,11 +103,20 @@ public:
     void setTextureID(const std::string& _textureID) { textureID = _textureID; }
 
 
-    
-
     void render(SDL_Renderer* renderer) {
         if(!textureID.empty()){
             TextureManager::getInstance()->drawTexture(getTextureID(), renderer, getPosition(), getSize());
+        }
+    }
+
+    void move(Vector2D& direction, float speed){
+        Vector2D newPosition = getPosition() + direction.normalize() * speed;
+
+        Hitbox newHitbox = getHitbox();
+        newHitbox.setPosition(newPosition);
+
+        if(direction.magnitude() > 0.0f && !checkMapEntityCollision(newHitbox, *TileMap::getInstance())){
+            setPosition(newPosition);
         }
     }
 };
