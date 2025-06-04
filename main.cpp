@@ -6,7 +6,6 @@
 
 #include "inc/Entity.h"
 #include "inc/Player.h"
-#include "inc/Object.h"
 #include "inc/TextureManager.h"
 #include "inc/TileMap.h"
 #include "inc/Config.h"
@@ -69,8 +68,6 @@ int main(int argc, char** argv){
     // cargar jugador
     Player* player = Player::getInstance();
 
-    // prueba objeto (rectangulo)
-    Object* object = new Object(1, "Test Object", 100, 100, 50, 50, "player_down");
 
 
     /*-------------------*/
@@ -93,24 +90,24 @@ int main(int argc, char** argv){
         keyState = SDL_GetKeyboardState(NULL);
 
         // actualizar estado del jugador
-        int dx = 0, dy = 0;
+        Vector2D direction(0, 0);
 
         // Movimiento del sprite con el teclado
         if (keyState[SDL_SCANCODE_UP]) {
-            dy -= 1;
+            direction += Vector2D(0, -1);
         }
         if (keyState[SDL_SCANCODE_DOWN]) {
-            dy += 1;
+            direction += Vector2D(0, 1);
         }
         if (keyState[SDL_SCANCODE_LEFT]) {
-            dx -= 1;
+            direction += Vector2D(-1, 0);
         }
         if (keyState[SDL_SCANCODE_RIGHT]) {
-            dx += 1;
+            direction += Vector2D(1, 0);
         }
 
         // Mover el jugador
-        player->move(dx, dy);
+        player->move(direction);
 
 
 
@@ -123,8 +120,6 @@ int main(int argc, char** argv){
 
         // Renderizar la textura en la posición del sprite
         player->render(renderer);
-        // Renderizar el objeto
-        object->render(renderer);
 
         // Actualizar la pantalla
         SDL_RenderPresent(renderer);
@@ -134,8 +129,6 @@ int main(int argc, char** argv){
 
     // Limpiar y cerrar SDL
     // Revisar después si hay leakeos de memoria
-    Player::getInstance()->~Player();
-    delete Player::getInstance();
     textureManager->clearAllTextures();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);

@@ -6,6 +6,7 @@
 #include <string>
 #include <map>
 
+#include "Vector2D.h"
 #include "TextureManager.h"
 
 /**
@@ -14,47 +15,39 @@
  */
 class Hitbox{
     public:
-        /**
-         * @brief Construct a new Hitbox object
-         * 
-         * @param _x 
-         * @param _y 
-         * @param _width 
-         * @param _height 
-         */
-        Hitbox() : x(0), y(0), width(0), height(0) {
-            rect = {0,0,0,0};
-        }
 
-        /**
-         * @brief Construct a new Hitbox object
-         * 
-         * @param _x 
-         * @param _y 
-         * @param _width 
-         * @param _height 
-         */
-        Hitbox(int _x, int _y, int _width, int _height)
-            : x(_x), y(_y), width(_width), height(_height) {
-            rect = {x, y, width, height};
+        Hitbox() : position(0,0), size(0,0), rect{0,0,0,0} {}
+
+        Hitbox(Vector2D& _position, Vector2D& _size)
+            : position(_position), size(_size) {
+            rect = {static_cast<int>(_position.x), static_cast<int>(_position.y), static_cast<int>(_size.x), static_cast<int>(_size.y)};
         }
 
         /** GETTERS & SETTERS */
-        int getX() { return x; }
-        int getY() { return y; }
-        int getWidth() { return width; }
-        int getHeight() { return height; }
+        int getX() { return position.x; }
+        int getY() { return position.y; }
+
+        int getWidth() { return size.x; }
+        int getHeight() { return size.y; }
         SDL_Rect getRect() { return rect; }
 
-        void setX(int _x) { x = _x; rect.x = x; }
-        void setY(int _y) { y = _y; rect.y = y; }
-        void setWidth(int _width) { width = _width; rect.w = width; }
-        void setHeight(int _height) { height = _height; rect.h = height; }
+        void setPosition(const Vector2D& _position){
+            position = _position;
+            rect.x = position.x;
+            rect.y = position.y;
+        }
+        void setSize(Vector2D& _size){
+            size = _size;
+            rect.w = size.x;
+            rect.h = size.y;
+        }
+
+
 
     
     private:
-        int x, y;
-        int width, height;
+        Vector2D position;
+        Vector2D size;
         SDL_Rect rect;
 };
 
@@ -66,20 +59,17 @@ class Entity{
 private:
     int id;
     std::string name;
-    int x, y;
-    int width, height;
-    int speed;
-    Hitbox hitbox;
-    SDL_Texture* texture;
+    Vector2D position;
+    Vector2D size;
     std::string textureID;
-    int health;
+    Hitbox hitbox;
 
 public:
     /**
      * @brief Construct a new Entity object
      * 
      */
-    Entity() : id(0), name(nullptr), x(0), y(0), width(0), height(0), speed(0), textureID(""), health(100) {
+    Entity() : id(0), name("NULL"), position(0,0), size(0,0), textureID("NULL") {
         hitbox = Hitbox();
     }
 
@@ -87,53 +77,31 @@ public:
      * @brief Construct a new Entity object
      * 
      */
-    Entity(int _id, std::string _name, int _x, int _y, int _width, int _height, int _speed, int _health, std::string _textureID)
-        : id(_id), name(_name), x(_x), y(_y), width(_width), height(_height), speed(_speed), health(_health), textureID(_textureID){
-        hitbox = Hitbox(x, y, width, height);
-    }
-
-    /**
-     * @brief Destroy the Entity object
-     * 
-     */
-    ~Entity() {
-        if (texture != nullptr) {
-            SDL_DestroyTexture(texture);
-        }
+    Entity(int _id, std::string _name, Vector2D _position, Vector2D _size, std::string _textureID)
+        : id(_id), name(_name), position(_position), size(_size), textureID(_textureID){
+        hitbox = Hitbox(_position, _size);
     }
 
     /** GETTERS & SETTERS */
     int getId() {return id; }
     const std::string& getName() { return name; }
-    int getX() { return x; }
-    int getY() { return y; }
-    int getWidth() { return width; }
-    int getHeight() { return height; }
-    int getSpeed() { return speed; }
-    int getHealth() { return health; }
+    Vector2D& getPosition() { return position; }
+    Vector2D& getSize() { return size; }
     Hitbox& getHitbox() { return hitbox; }
-
-    void setId(int _id) { id = _id; }
-    void setX(int _x){x = _x;hitbox.setX(_x);}
-    void setY(int _y){y = _y;hitbox.setY(_y);}
-    void setTextureID(const std::string& _textureID) { textureID = _textureID; }
-    void setHealth(int _health) { health = _health; }
-
-    /** MÉTODOS */
-    void move(int dx, int dy){
-        x += dx * speed;
-        y += dy * speed;
-        hitbox.setX(x);
-        hitbox.setY(y);
-    }
-
     std::string getTextureID() const {
         return textureID;
     }
 
+    void setId(int _id) { id = _id; }
+    void setPosition(const Vector2D& _position){position = _position;hitbox.setPosition(position);}
+    void setTextureID(const std::string& _textureID) { textureID = _textureID; }
+
+
+    
+
     void render(SDL_Renderer* renderer) {
         if(!textureID.empty()){
-            TextureManager::getInstance()->drawTexture(getTextureID(), renderer, getX(), getY(), getWidth(), getHeight());
+            TextureManager::getInstance()->drawTexture(getTextureID(), renderer, getPosition(), getSize());
         }
     }
 };

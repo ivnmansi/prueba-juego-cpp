@@ -4,7 +4,6 @@
 #include "Entity.h"
 #include "TextureManager.h"
 #include "Player.h"
-#include "Object.h"
 #include "Config.h"
 
 
@@ -14,16 +13,34 @@
 
 #define TILE_TYPE_NUM 3
 
+/**
+ * CAMBIAR LOGICA PARA QUE TILEMAP SOLO MANEJE POSICIÓN DE COLISIONES Y TRIGGERS
+ * QUE LA IMAGEN DEL MAPA SEA UNA IMAGEN DIBUJADA DE FONDO EN VEZ DE TILES
+ * 
+ */
+
+// Collisions
 enum CollisionType {
     COLLISION_TRUE,
     COLLISION_FALSE,
 };
+
+// Triggers
+enum TriggerType {
+    NO_TRIGGER,
+    TEST_TRIGGER,
+};
+
 typedef struct {
     std::string name;
     enum CollisionType collisionType;
+    enum TriggerType triggerType;
 } TileType;
+
 typedef struct {
     int id;
+    enum CollisionType collisionType;
+    enum TriggerType triggerType;
 } Tile;
 
 class TileMap {
@@ -105,10 +122,8 @@ class TileMap {
                     TextureManager::getInstance()->drawTexture(
                         tileTextureID,
                         renderer,
-                        x * TILE_SIZE,
-                        y * TILE_SIZE,
-                        TILE_SIZE,
-                        TILE_SIZE,
+                        Vector2D(x * TILE_SIZE, y * TILE_SIZE),
+                        Vector2D(TILE_SIZE, TILE_SIZE),
                         &sheet
                     );
                 }

@@ -2,36 +2,40 @@
 
 Player* Player::instance = nullptr;
 
-void Player::move(int dx, int dy){
-    if(!(Player::getX() + dx * Player::getSpeed() < 0 || 
-       Player::getX() + dx * Player::getSpeed() + Player::getWidth() > 1280 ||
-       Player::getY() + dy * Player::getSpeed() < 0 || 
-       Player::getY() + dy * Player::getSpeed() + Player::getHeight() > 720)){
-        Entity::move(dx, dy);
+/**
+ * @brief 
+ * 
+ * @param dx 
+ * @param dy 
+ */
+void Player::move(Vector2D& direction){
+
+    if(direction.magnitude() > 0.0f){
+        setPosition(getPosition() + direction.normalize() * speed);
     }
 
-    if(dx > 0 && dy == 0){
+    if(direction.x > 0 && direction.y == 0){
         setTextureID("player_right");
     }
-    else if(dx < 0 && dy == 0){
+    else if(direction.x < 0 && direction.y == 0){
         setTextureID("player_left");
     }
-    else if(dy > 0 && dx == 0){
+    else if(direction.y > 0 && direction.x == 0){
         setTextureID("player_down");
     }
-    else if(dy < 0 && dx == 0){
+    else if(direction.y < 0 && direction.x == 0){
         setTextureID("player_up");
             }
-    else if(dx > 0 && dy > 0){
+    else if(direction.x > 0 && direction.y > 0){
         setTextureID("player_down_right");
     }
-    else if(dx < 0 && dy > 0){
+    else if(direction.x < 0 && direction.y > 0){
         setTextureID("player_down_left");
     }
-    else if(dx > 0 && dy < 0){
+    else if(direction.x > 0 && direction.y < 0){
         setTextureID("player_up_right");
     }
-    else if(dx < 0 && dy < 0){
+    else if(direction.x < 0 && direction.y < 0){
         setTextureID("player_up_left");
     }
 }

@@ -6,24 +6,30 @@
 
 class Player : public Entity {
     private:
+
+        int health;
+        float speed;
+
         /**
-         * @brief Construct a new Player object (singleton)
+         * @brief Construct the Player object (singleton)
          * 
          */
         Player() : Entity(
-            0,                 // ID
-            "Player",          // NAME
-            0,                 // X
-            0,                 // Y
-            40,                // WIDTH
-            80,                // HEIGHT
-            5,                 // SPEED
-            100,               // HEALTH
-            "player_down"      // TEXTURE ID
-        ) {}
+            0,                          // ID
+            std::string("Player"),      // NAME
+            Vector2D(0,0),              // POSITION
+            Vector2D(40,80),            // SIZE
+            std::string("player_down")  // TEXTURE ID
+        ) {
+            health = 100;               // HEALTH
+            speed = 5;                  // SPEED
+        }
+
         Player(const Player&) = delete;
         Player& operator=(const Player&) = delete;
         static Player* instance;
+
+        
 
     public:
         /**
@@ -38,7 +44,7 @@ class Player : public Entity {
             return instance;
         }
 
-        void move(int dx, int dy);
+        void move(Vector2D& direction);
 
 
         
