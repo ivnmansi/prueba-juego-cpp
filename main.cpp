@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <time.h>
-#include <windows.h>
 
 #include "inc/Entity.h"
 #include "inc/Player.h"

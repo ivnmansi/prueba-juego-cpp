@@ -1,3 +1,5 @@
+""" for compiling the game on windows with mingw64
+"""
 @echo off
 echo === Building game ===
 

@@ -1,7 +1,11 @@
 #ifndef TILEMAP_H
 #define TILEMAP_H
 
-#include "Entity.h"
+#include <fstream>
+#include <sstream>
+#include <string>
+
+#include "Vector2D.h"
 #include "TextureManager.h"
 #include "Config.h"
 

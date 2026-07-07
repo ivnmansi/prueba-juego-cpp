@@ -5,11 +5,13 @@
 #include <cstring>
 #include <string>
 #include <map>
+#include <utility>
 
 #include "Vector2D.h"
 #include "TextureManager.h"
 #include "Collision.h"
-#include "TileMap.h"
+
+class TileMap;
 
 /**
  * @brief Class representing a hitbox for collision detection
@@ -109,16 +111,7 @@ public:
         }
     }
 
-    void move(Vector2D& direction, float speed){
-        Vector2D newPosition = getPosition() + direction.normalize() * speed;
-
-        Hitbox newHitbox = getHitbox();
-        newHitbox.setPosition(newPosition);
-
-        if(direction.magnitude() > 0.0f && !checkMapEntityCollision(newHitbox, *TileMap::getInstance())){
-            setPosition(newPosition);
-        }
-    }
+    void move(Vector2D& direction, float speed);
 };
 
 class EntityManager {
