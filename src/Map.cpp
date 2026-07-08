@@ -47,18 +47,30 @@ const TileMap& Map::getTileMap(int layer) const {
     return tileMap[layer];
 }
 
-void Map::render(SDL_Renderer* renderer) {
+void Map::renderBackground(SDL_Renderer* renderer){
     TextureManager::getInstance()->drawTexture(
         mapBackground,
         renderer,
         Vector2D(0, 0),
         Vector2D(TILE_SIZE * GRID_WIDTH, TILE_SIZE * GRID_HEIGHT)
     );
+}
 
-    for (int layer = 0; layer < MAX_MAP_LAYERS; ++layer) {
+void Map::renderLayersBelowPlayer(SDL_Renderer* renderer, bool debugMode){
+    for (int layer = 0; layer < 3; ++layer) {
+        if(layer == 0 && !debugMode){
+            continue;
+        }
         tileMap[layer].render(renderer);
     }
 }
+
+void Map::renderLayersAbovePlayer(SDL_Renderer* renderer){
+    for (int layer = 3; layer < MAX_MAP_LAYERS; ++layer) {
+        tileMap[layer].render(renderer);
+    }
+}
+
 
 void Map::loadMapFromFile(const std::string& filePath, SDL_Renderer* renderer) {
     MapParser parser;

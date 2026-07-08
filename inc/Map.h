@@ -38,7 +38,10 @@ class Map {
         const TileMap& getTileMap(int layer) const;
 
         void loadMapFromFile(const std::string& filePath, SDL_Renderer* renderer);
-        void render(SDL_Renderer* renderer);
+
+        void renderBackground(SDL_Renderer* renderer);
+        void renderLayersBelowPlayer(SDL_Renderer* renderer, bool debugMode);
+        void renderLayersAbovePlayer(SDL_Renderer* renderer);
 };
 
 #endif

@@ -4,9 +4,7 @@
 #include <time.h>
 
 #include "inc/Entity.h"
-#include "inc/Player.h"
-#include "inc/TextureManager.h"
-#include "inc/Map.h"
+#include "inc/Scene.h"
 #include "inc/Config.h"
 
 int main(int argc, char** argv){
@@ -63,6 +61,7 @@ int main(int argc, char** argv){
     // cargar jugador
     Player* player = Player::getInstance();
     bool debug_mode = false;
+    Scene* scene = Scene::getInstance();
 
 
 
@@ -105,22 +104,9 @@ int main(int argc, char** argv){
             direction += Vector2D(1, 0);
         }
 
-        // Mover el jugador
         player->move(direction, map.getTileMap(0));
 
-
-
-        
-
-
-       // Limpiar pantalla y establecer el color del fondo (blanco)
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Color blanco
-        SDL_RenderClear(renderer);
-
-        
-        map.render(renderer);
-        // Renderizar la textura en la posición del sprite
-        player->render(renderer);
+        scene->render(renderer, map, player, debug_mode);
 
         // Actualizar la pantalla
         SDL_RenderPresent(renderer);

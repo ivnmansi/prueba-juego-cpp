@@ -150,6 +150,8 @@ class EntityManager {
             return nullptr; // Retorna nullptr si no se encuentra la entidad
         }
 
+        // TODO: Implementar remove, update, render, etc
+
 
 
 };
