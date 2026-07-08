@@ -6,11 +6,8 @@
 #include "inc/Entity.h"
 #include "inc/Player.h"
 #include "inc/TextureManager.h"
-#include "inc/TileMap.h"
+#include "inc/Map.h"
 #include "inc/Config.h"
-
-
-TextureManager* TextureManager::instance = nullptr;
 
 int main(int argc, char** argv){
 
@@ -58,15 +55,14 @@ int main(int argc, char** argv){
         return -1;
     }
 
-    // Cargar tilemap
-    TileMap* tileMap = TileMap::getInstance();
-    bool debug_mode = false;
-    // mapa de prueba
-    tileMap->loadMapFromFile("data/testmap.map", renderer);
-    SDL_Log("nombre del mapa: %s", tileMap->getMapName().c_str());
+    // Cargar mapa
+    Map map;
+    map.loadMapFromFile("data/testmap.map", renderer);
+    SDL_Log("nombre del mapa: %s", map.getMapName().c_str());
 
     // cargar jugador
     Player* player = Player::getInstance();
+    bool debug_mode = false;
 
 
 
@@ -110,7 +106,9 @@ int main(int argc, char** argv){
         }
 
         // Mover el jugador
-        player->move(direction);
+        player->move(direction, map.getTileMap(0));
+
+
 
         
 
@@ -120,7 +118,7 @@ int main(int argc, char** argv){
         SDL_RenderClear(renderer);
 
         
-        tileMap->render(renderer, debug_mode);
+        map.render(renderer);
         // Renderizar la textura en la posición del sprite
         player->render(renderer);
 

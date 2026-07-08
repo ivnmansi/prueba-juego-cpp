@@ -8,9 +8,9 @@ Player* Player::instance = nullptr;
  * @param dx 
  * @param dy 
  */
-void Player::move(Vector2D& direction){
+void Player::move(Vector2D& direction, const TileMap& tileMap){
     
-    Entity::move(direction, speed);
+    Entity::move(direction, speed, tileMap);
     
     if(direction.x > 0 && direction.y == 0){
         setTextureID("player_right");

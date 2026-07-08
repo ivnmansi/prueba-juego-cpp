@@ -111,7 +111,7 @@ public:
         }
     }
 
-    void move(Vector2D& direction, float speed);
+    void move(Vector2D& direction, float speed, const TileMap& tileMap);
 };
 
 class EntityManager {

@@ -42,7 +42,7 @@ class Player : public Entity {
             return instance;
         }
 
-        void move(Vector2D& direction);
+        void move(Vector2D& direction, const TileMap& tileMap);
 
         void render(SDL_Renderer* renderer) {
             Entity::render(renderer);
