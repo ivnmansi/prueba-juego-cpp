@@ -2,7 +2,7 @@
 #define SCENE_H
 
 #include <SDL2/SDL.h>
-#include "Player.h"
+#include "Entity.h"
 #include "Map.h"
 
 class Scene {
@@ -18,17 +18,7 @@ class Scene {
             return instance;
         }
 
-        void render(SDL_Renderer* renderer, Map& map, Player* player, bool debugMode) {
-            // Limpiar pantalla y establecer el color del fondo (blanco)
-            SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Color blanco
-            SDL_RenderClear(renderer);
-
-            // Renderizar el mapa
-            map.renderBackground(renderer);
-            map.renderLayersBelowPlayer(renderer, debugMode);
-            player->render(renderer);
-            map.renderLayersAbovePlayer(renderer);
-        }
+        void render(SDL_Renderer* renderer, Map& map, EntityManager* entityManager, bool debugMode);
 };
 
 #endif

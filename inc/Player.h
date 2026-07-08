@@ -19,7 +19,9 @@ class Player : public Entity {
             std::string("Player"),      // NAME
             Vector2D(0,0),              // POSITION
             Vector2D(40,80),            // SIZE
-            std::string("player_down")  // TEXTURE ID
+            std::string("player_down"), // TEXTURE ID
+            Vector2D(20, 80),           // HITBOX SIZE
+            Vector2D(10, 0)              // HITBOX OFFSET
         ) {
             health = 100;               // HEALTH
             speed = 4;                  // SPEED
@@ -38,6 +40,7 @@ class Player : public Entity {
         static Player* getInstance() {
             if (instance == nullptr) {
                 instance = new Player();
+                EntityManager::getInstance()->addEntity(*instance);
             }
             return instance;
         }

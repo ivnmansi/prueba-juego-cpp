@@ -4,6 +4,7 @@
 #include <time.h>
 
 #include "inc/Entity.h"
+#include "inc/Player.h"
 #include "inc/Scene.h"
 #include "inc/Config.h"
 
@@ -24,7 +25,7 @@ int main(int argc, char** argv){
 
     /* CREATE WINDOW */
     SDL_Window *window = SDL_CreateWindow(
-        "PRUEBA",
+        WINDOW_TITLE,
         SDL_WINDOWPOS_UNDEFINED,
         SDL_WINDOWPOS_UNDEFINED,
         SCREEN_WIDTH,
@@ -44,7 +45,7 @@ int main(int argc, char** argv){
     }
 
     /*------------------*/
-    // Cargar todas las texturas
+    // Cargar managers
     TextureManager* textureManager = TextureManager::getInstance();
     if (!textureManager->loadTexturesFromDirectory("img", renderer)) {
         SDL_DestroyRenderer(renderer);
@@ -52,17 +53,19 @@ int main(int argc, char** argv){
         SDL_Quit();
         return -1;
     }
+    EntityManager* entityManager = EntityManager::getInstance();
+
 
     // Cargar mapa
     Map map;
     map.loadMapFromFile("data/testmap.map", renderer);
-    SDL_Log("nombre del mapa: %s", map.getMapName().c_str());
 
     // cargar jugador
     Player* player = Player::getInstance();
     bool debug_mode = false;
     Scene* scene = Scene::getInstance();
 
+    entityManager->printEntities();
 
 
     /*-------------------*/
@@ -106,7 +109,7 @@ int main(int argc, char** argv){
 
         player->move(direction, map.getTileMap(0));
 
-        scene->render(renderer, map, player, debug_mode);
+        scene->render(renderer, map, entityManager, debug_mode);
 
         // Actualizar la pantalla
         SDL_RenderPresent(renderer);

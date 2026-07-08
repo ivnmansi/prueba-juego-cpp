@@ -20,16 +20,21 @@ class TileMap;
 class Hitbox{
     public:
 
-        Hitbox() : position(0,0), size(0,0), rect{0,0,0,0} {}
+        Hitbox() : position(0,0), size(0,0), offset(0,0), rect{0,0,0,0} {}
 
-        Hitbox(Vector2D& _position, Vector2D& _size)
-            : position(_position), size(_size) {
-            rect = {static_cast<int>(_position.x), static_cast<int>(_position.y), static_cast<int>(_size.x), static_cast<int>(_size.y)};
+        Hitbox(const Vector2D& _position, const Vector2D& _size, const Vector2D& _offset = Vector2D(0, 0))
+            : position(_position), size(_size), offset(_offset) {
+            rect = {
+                static_cast<int>(_position.x + _offset.x),
+                static_cast<int>(_position.y + _offset.y),
+                static_cast<int>(_size.x),
+                static_cast<int>(_size.y)
+            };
         }
 
         /** GETTERS & SETTERS */
-        const int getX() const { return position.x; }
-        const int getY() const { return position.y; }
+        const int getX() const { return rect.x; }
+        const int getY() const { return rect.y; }
 
         const int getWidth() const { return size.x; }
         const int getHeight() const { return size.y; }
@@ -37,13 +42,31 @@ class Hitbox{
 
         void setPosition(const Vector2D& _position){
             position = _position;
-            rect.x = position.x;
-            rect.y = position.y;
+            rect.x = position.x + offset.x;
+            rect.y = position.y + offset.y;
         }
-        void setSize(Vector2D& _size){
+        void setSize(const Vector2D& _size){
             size = _size;
             rect.w = size.x;
             rect.h = size.y;
+        }
+
+        void setOffset(const Vector2D& _offset) {
+            offset = _offset;
+            rect.x = position.x + offset.x;
+            rect.y = position.y + offset.y;
+        }
+
+        void setBounds(const Vector2D& _position, const Vector2D& _size, const Vector2D& _offset = Vector2D(0, 0)) {
+            position = _position;
+            size = _size;
+            offset = _offset;
+            rect = {
+                static_cast<int>(position.x + offset.x),
+                static_cast<int>(position.y + offset.y),
+                static_cast<int>(size.x),
+                static_cast<int>(size.y)
+            };
         }
 
 
@@ -52,6 +75,7 @@ class Hitbox{
     private:
         Vector2D position;
         Vector2D size;
+        Vector2D offset;
         SDL_Rect rect;
 };
 
@@ -70,6 +94,8 @@ private:
     Vector2D size;
     std::string textureID;
     Hitbox hitbox;
+    Vector2D hitboxSize;
+    Vector2D hitboxOffset;
 
 
 public:
@@ -78,6 +104,8 @@ public:
      * 
      */
     Entity() : id(0), name("NULL"), position(0,0), size(0,0), textureID("NULL") {
+        hitboxSize = size;
+        hitboxOffset = Vector2D(0, 0);
         hitbox = Hitbox();
     }
 
@@ -85,9 +113,12 @@ public:
      * @brief Construct a new Entity object
      * 
      */
-    Entity(int _id, std::string _name, Vector2D _position, Vector2D _size, std::string _textureID)
-        : id(_id), name(_name), position(_position), size(_size), textureID(_textureID){
-        hitbox = Hitbox(_position, _size);
+    Entity(int _id, std::string _name, Vector2D _position, Vector2D _size, std::string _textureID, const Vector2D& _hitboxSize = Vector2D(0, 0), const Vector2D& _hitboxOffset = Vector2D(0, 0))
+        : id(_id), name(_name), position(_position), size(_size), textureID(_textureID), hitboxSize(_hitboxSize), hitboxOffset(_hitboxOffset){
+        if (hitboxSize.x <= 0 || hitboxSize.y <= 0) {
+            hitboxSize = _size;
+        }
+        hitbox = Hitbox(_position, hitboxSize, hitboxOffset);
     }
 
     /** GETTERS & SETTERS */
@@ -101,25 +132,26 @@ public:
     }
 
     void setId(int _id) { id = _id; }
-    void setPosition(const Vector2D& _position){position = _position;hitbox.setPosition(position);}
+    void setPosition(const Vector2D& _position){position = _position;hitbox.setBounds(position, hitboxSize, hitboxOffset);}
     void setTextureID(const std::string& _textureID) { textureID = _textureID; }
+    void setHitbox(const Hitbox& _hitbox) { hitbox = _hitbox; }
 
 
-    void render(SDL_Renderer* renderer) {
-        if(!textureID.empty()){
-            TextureManager::getInstance()->drawTexture(getTextureID(), renderer, getPosition(), getSize());
-        }
-    }
+    void render(SDL_Renderer* renderer);
 
     void move(Vector2D& direction, float speed, const TileMap& tileMap);
 };
 
+/**
+ * @brief Singleton class to manage all entities in the game
+ * 
+ */
 class EntityManager {
     private:
         static EntityManager* instance;
         EntityManager() = default;
 
-        std::map<int, Entity> entityMap;
+        std::map<int, Entity*> entityMap;
     
     public:
         ~EntityManager() {
@@ -133,22 +165,16 @@ class EntityManager {
             return instance;
         }
 
-        void addEntity(Entity& entity) {
-            int id = entity.getId();
-            if (entityMap.find(id) == entityMap.end()) {
-                entityMap[id] = std::move(entity);
-            } else {
-                id = entityMap.size() + 1; // Generar un nuevo ID si ya existe
-                entityMap[id] = std::move(entity);
-            }
-        }
+        void addEntity(Entity& entity);
+        Entity* getEntity(int id);
+        void removeEntity(int id);
 
-        Entity* getEntity(int id) {
-            if (entityMap.find(id) != entityMap.end()) {
-                return &entityMap[id];
-            }
-            return nullptr; // Retorna nullptr si no se encuentra la entidad
-        }
+        void updateEntities(float deltaTime, const TileMap& tileMap);
+        void renderEntities(SDL_Renderer* renderer);
+
+        void clearEntities();
+
+        void printEntities();
 
         // TODO: Implementar remove, update, render, etc
 

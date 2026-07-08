@@ -98,11 +98,17 @@ void MapParser::loadMapFromFile(Map& map, const std::string& filePath) {
                     try {
                         int width = std::stoi(value);
                         map.setMapSize({(float)width, map.getMapSize().y});
+                        for (int layer = 0; layer < MAX_MAP_LAYERS; ++layer) {
+                            map.getTileMap(layer).setDimensions(width, (int)map.getMapSize().y);
+                        }
                     } catch (...) {}
                 } else if (key == "height") {
                     try {
                         int height = std::stoi(value);
                         map.setMapSize({map.getMapSize().x, (float)height});
+                        for (int layer = 0; layer < MAX_MAP_LAYERS; ++layer) {
+                            map.getTileMap(layer).setDimensions((int)map.getMapSize().x, height);
+                        }
                     } catch (...) {}
                 }
             }
@@ -120,12 +126,12 @@ void MapParser::loadMapFromFile(Map& map, const std::string& filePath) {
             }
 
             // Parse tile grid
-            if (rowInLayer < GRID_HEIGHT) {
+            if (rowInLayer < map.getTileMap(currentLayer).getHeight()) {
                 std::stringstream lineStream(trimmedLine);
                 int tileID;
                 int col = 0;
 
-                while (lineStream >> tileID && col < GRID_WIDTH) {
+                while (lineStream >> tileID && col < map.getTileMap(currentLayer).getWidth()) {
                     if (tileID < 0 || tileID >= TILE_TYPE_NUM) {
                         SDL_Log("Invalid tile ID %d at position (%d, %d)", tileID, col, rowInLayer);
                         tileID = 0;

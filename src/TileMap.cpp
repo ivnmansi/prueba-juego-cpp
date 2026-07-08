@@ -5,12 +5,24 @@
  * Initializes with an empty grid
  */
 TileMap::TileMap() {
-    for (int x = 0; x < GRID_WIDTH; ++x) {
-        for (int y = 0; y < GRID_HEIGHT; ++y) {
-            grid[x][y].id = 0;
-        }
-    }
+    gridWidth = GRID_WIDTH;
+    gridHeight = GRID_HEIGHT;
+    grid.resize(gridWidth * gridHeight, Tile{});
     tileTextureID = "collition_tiles";
+}
+
+void TileMap::setDimensions(int width, int height) {
+    gridWidth = width > 0 ? width : 1;
+    gridHeight = height > 0 ? height : 1;
+    grid.assign(gridWidth * gridHeight, Tile{});
+}
+
+int TileMap::getWidth() const {
+    return gridWidth;
+}
+
+int TileMap::getHeight() const {
+    return gridHeight;
 }
 
 /**
@@ -21,8 +33,8 @@ TileMap::TileMap() {
  * @param id 
  */
 void TileMap::setTile(int x, int y, int id) {
-    if (x >= 0 && x < GRID_WIDTH && y >= 0 && y < GRID_HEIGHT) {
-        grid[x][y].id = id;
+    if (x >= 0 && x < gridWidth && y >= 0 && y < gridHeight) {
+        grid[y * gridWidth + x].id = id;
     }
 }
 
@@ -34,8 +46,8 @@ void TileMap::setTile(int x, int y, int id) {
  * @return const Tile 
  */
 const Tile TileMap::getTile(int x, int y) const {
-    if (x >= 0 && x < GRID_WIDTH && y >= 0 && y < GRID_HEIGHT) {
-        return grid[x][y];
+    if (x >= 0 && x < gridWidth && y >= 0 && y < gridHeight) {
+        return grid[y * gridWidth + x];
     }
     return {0};
 }
@@ -54,7 +66,7 @@ const TileType TileMap::getTileType(int id) const {
 }
 
 const Tile* TileMap::getGrid() const {
-    return &grid[0][0];
+    return grid.empty() ? nullptr : grid.data();
 }
 
 void TileMap::setTileTextureID(const std::string& textureID) {
@@ -66,9 +78,9 @@ std::string TileMap::getTileTextureID() {
 }
 
 void TileMap::render(SDL_Renderer* renderer) {
-    for (int x = 0; x < GRID_WIDTH; ++x) {
-        for (int y = 0; y < GRID_HEIGHT; ++y) {
-            Tile* tile = &grid[x][y];
+    for (int x = 0; x < gridWidth; ++x) {
+        for (int y = 0; y < gridHeight; ++y) {
+            Tile* tile = &grid[y * gridWidth + x];
             if(tile->id >= 0 && tile->id < TILE_TYPE_NUM){
                 SDL_Rect sheet = {32 * tile->id, 0, 32, 32};
                 TextureManager::getInstance()->drawTexture(

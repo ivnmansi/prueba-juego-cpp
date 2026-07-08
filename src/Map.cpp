@@ -9,6 +9,9 @@ Map::Map() {
     mapBackground = "default";
     mapSize = Vector2D(20, 10);
     tileMap = new TileMap[MAX_MAP_LAYERS];
+    for (int layer = 0; layer < MAX_MAP_LAYERS; ++layer) {
+        tileMap[layer].setDimensions((int)mapSize.x, (int)mapSize.y);
+    }
 }
 
 Map::~Map() {
@@ -52,7 +55,7 @@ void Map::renderBackground(SDL_Renderer* renderer){
         mapBackground,
         renderer,
         Vector2D(0, 0),
-        Vector2D(TILE_SIZE * GRID_WIDTH, TILE_SIZE * GRID_HEIGHT)
+        Vector2D(TILE_SIZE * mapSize.x, TILE_SIZE * mapSize.y)
     );
 }
 

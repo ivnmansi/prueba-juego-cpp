@@ -57,7 +57,7 @@ public:
     void drawTexture(const std::string& id, SDL_Renderer* renderer, const Vector2D& position, const Vector2D& size, SDL_Rect* rect = nullptr) {
         if (textureMap.find(id) != textureMap.end()){
             SDL_Texture* texture = textureMap[id];
-            SDL_Rect destRect = {position.x, position.y, size.x, size.y};
+            SDL_Rect destRect = {(int)position.x, (int)position.y, (int)size.x, (int)size.y};
             SDL_RenderCopy(renderer, texture, rect, &destRect);
         } else {
             SDL_Log("Texture with ID '%s' not found", id.c_str());

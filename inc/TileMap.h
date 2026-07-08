@@ -9,6 +9,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <vector>
 
 #include "Vector2D.h"
 #include "TextureManager.h"
@@ -49,7 +50,9 @@ typedef struct {
 class TileMap {
   private:
     // map grid dimensions
-    Tile grid[GRID_WIDTH][GRID_HEIGHT];
+        int gridWidth;
+        int gridHeight;
+        std::vector<Tile> grid;
     std::string tileTextureID;
     
     // dictionary of tile types
@@ -61,6 +64,12 @@ class TileMap {
 
   public:
     TileMap();
+
+        void setDimensions(int width, int height);
+
+        int getWidth() const;
+
+        int getHeight() const;
 
     void setTile(int x, int y, int id);
 
