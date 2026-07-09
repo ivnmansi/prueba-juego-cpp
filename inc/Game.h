@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <time.h>
+#include <algorithm>
 
 #include "../inc/InputManager.h"
 #include "../inc/Entity.h"
@@ -44,6 +45,8 @@ class Game {
         void HandleEvents();
         void Update(float deltaTime);
         void Render();
+
+        void updateCamera();
 };
 
 #endif

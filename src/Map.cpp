@@ -74,7 +74,7 @@ const TileMap& Map::getTileMap(int layer) const {
     return tileMap[layer];
 }
 
-void Map::renderBackground(SDL_Renderer* renderer){
+void Map::renderBackground(SDL_Renderer* renderer, const Camera& camera){
     TextureManager::getInstance()->drawTexture(
         mapBackground,
         renderer,
@@ -83,18 +83,18 @@ void Map::renderBackground(SDL_Renderer* renderer){
     );
 }
 
-void Map::renderLayersBelowPlayer(SDL_Renderer* renderer, bool debugMode){
+void Map::renderLayersBelowPlayer(SDL_Renderer* renderer, const Camera& camera, bool debugMode){
     for (int layer = 1; layer < 3; ++layer) {
-        tileMap[layer].render(renderer);
+        tileMap[layer].render(renderer, camera);
         if(layer == 2 && debugMode){
-            tileMap[0].render(renderer);
+            tileMap[0].render(renderer, camera);
         }
     }
 }
 
-void Map::renderLayersAbovePlayer(SDL_Renderer* renderer){
+void Map::renderLayersAbovePlayer(SDL_Renderer* renderer, const Camera& camera){
     for (int layer = 3; layer < MAX_MAP_LAYERS; ++layer) {
-        tileMap[layer].render(renderer);
+        tileMap[layer].render(renderer, camera);
     }
 }
 

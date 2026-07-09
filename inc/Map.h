@@ -9,6 +9,7 @@
 #include "TextureManager.h"
 #include "Config.h"
 #include "TileMap.h"
+#include "Camera.h"
 
 #define TILE_SIZE 40
 #define MAX_MAP_LAYERS 8
@@ -39,9 +40,9 @@ class Map {
 
         void loadMapFromFile(const std::string& filePath, SDL_Renderer* renderer);
 
-        void renderBackground(SDL_Renderer* renderer);
-        void renderLayersBelowPlayer(SDL_Renderer* renderer, bool debugMode);
-        void renderLayersAbovePlayer(SDL_Renderer* renderer);
+        void renderBackground(SDL_Renderer* renderer, const Camera& camera);
+        void renderLayersBelowPlayer(SDL_Renderer* renderer, const Camera& camera, bool debugMode);
+        void renderLayersAbovePlayer(SDL_Renderer* renderer, const Camera& camera);
 };
 
 #endif

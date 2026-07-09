@@ -13,12 +13,14 @@
 
 #include "Vector2D.h"
 #include "TextureManager.h"
+#include "Camera.h"
 #include "Config.h"
 
 
 #define GRID_HEIGHT 10
-#define TILE_SIZE 40
 #define GRID_WIDTH 20
+
+#define TILE_SIZE 40
 
 #define TILE_TYPE_NUM 3
 
@@ -83,7 +85,7 @@ class TileMap {
 
     std::string getTileTextureID();
 
-    void render(SDL_Renderer* renderer);
+    void render(SDL_Renderer* renderer, const Camera& camera);
 
 };
 

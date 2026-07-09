@@ -71,18 +71,37 @@ bool Game::init(){
     return true;
 }
 
+void Game::updateCamera(){
+    Player* player = Player::getInstance();
+    Camera& camera = scene->getCamera();
+
+    Vector2D cameraPos = player->getPosition() - camera.getSize() / 2.0f;
+    Vector2D mapSizePixels = Scene::getInstance()->getMap().getMapSize() * TILE_SIZE;
+
+    float maxX = std::max(0.0f, mapSizePixels.x - camera.getSize().x);
+    float maxY = std::max(0.0f, mapSizePixels.y - camera.getSize().y);
+
+    cameraPos.x = std::clamp(cameraPos.x, 0.0f, maxX);
+    cameraPos.y = std::clamp(cameraPos.y, 0.0f, maxY);
+
+    camera.setPosition(cameraPos);
+}
+
 void Game::Update(float dt)
 {
     entityManager->updateEntities(dt, Scene::getInstance()->getMap().getTileMap(0));
+
+    updateCamera();
 
     if (inputManager->isKeyPressed(SDL_SCANCODE_M))
         debugMode = !debugMode;
 }
 
+
 void Game::Render()
 {
     // Renderizar el mapa y las entidades
-    scene->render(renderer, entityManager, debugMode);
+    scene->render(renderer, scene->getCamera(), entityManager, debugMode);
 
     // Actualizar la pantalla
     SDL_RenderPresent(renderer);
@@ -94,6 +113,7 @@ void Game::Render()
  */
 void Game::run(){
     /* LOAD MAP */
+    /* MAKE A THING TO READ LEVELS.INI HERE*/
     Map map;
     map.loadMapFromFile("res/levels/testmap.map", renderer);
     Scene::getInstance()->setMap(&map);
@@ -101,6 +121,8 @@ void Game::run(){
     entityManager->printEntities();
 
     Uint64 last = SDL_GetPerformanceCounter();
+
+    scene->getCamera().setPosition(Vector2D(0, 0));
     while (this->running) {
         // delta time calculation
         Uint64 now = SDL_GetPerformanceCounter();

@@ -65,7 +65,7 @@ Entity* EntityManager::createEntity(EntityType type, Vector2D position) {
 }
 
 /**
- * @brief Will update all entities in the entity manager. Currently, this function does not perform any updates, but it can be extended to include entity-specific update logic.
+ * @brief Will update all entities in the entity manager
  * 
  * @param deltaTime  Time elapsed since the last update, in seconds
  * @param tileMap 

@@ -77,7 +77,7 @@ std::string TileMap::getTileTextureID() {
     return tileTextureID;
 }
 
-void TileMap::render(SDL_Renderer* renderer) {
+void TileMap::render(SDL_Renderer* renderer, const Camera& camera) {
     for (int x = 0; x < gridWidth; ++x) {
         for (int y = 0; y < gridHeight; ++y) {
             Tile* tile = &grid[y * gridWidth + x];
@@ -86,7 +86,7 @@ void TileMap::render(SDL_Renderer* renderer) {
                 TextureManager::getInstance()->drawTexture(
                     tileTextureID,
                     renderer,
-                    Vector2D(x * TILE_SIZE, y * TILE_SIZE),
+                    camera.worldToScreen(Vector2D(x * TILE_SIZE, y * TILE_SIZE)),
                     Vector2D(TILE_SIZE, TILE_SIZE),
                     &sheet
                 );
