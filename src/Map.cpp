@@ -84,11 +84,11 @@ void Map::renderBackground(SDL_Renderer* renderer){
 }
 
 void Map::renderLayersBelowPlayer(SDL_Renderer* renderer, bool debugMode){
-    for (int layer = 0; layer < 3; ++layer) {
-        if(layer == 0 && !debugMode){
-            continue;
-        }
+    for (int layer = 1; layer < 3; ++layer) {
         tileMap[layer].render(renderer);
+        if(layer == 2 && debugMode){
+            tileMap[0].render(renderer);
+        }
     }
 }
 

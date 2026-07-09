@@ -186,11 +186,6 @@ class EntityManager {
         void clearEntities();
 
         void printEntities();
-
-        // TODO: Implementar remove, update, render, etc
-
-
-
 };
 
 #endif

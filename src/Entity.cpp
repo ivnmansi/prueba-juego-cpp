@@ -72,7 +72,7 @@ Entity* EntityManager::createEntity(EntityType type, Vector2D position) {
  */
 void EntityManager::updateEntities(float deltaTime, const TileMap& tileMap) {
     for (auto& pair : entityMap) {
-        // do something
+        // TODO: IMPLEMENTAR LÓGICA DE ACTUALIZACIÓN DE ENTIDADES
     }
 }
 

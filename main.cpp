@@ -3,128 +3,20 @@
 #include <stdbool.h>
 #include <time.h>
 
-#include "inc/Entity.h"
-#include "inc/Player.h"
-#include "inc/Scene.h"
-#include "inc/Config.h"
+#include "inc/Game.h"
 
 int main(int argc, char** argv){
 
     srand(time(NULL));
 
-    /* INIT VIDEO SYSTEM */
-    if(SDL_Init(SDL_INIT_VIDEO) < 0){
-        printf("Error: SDL failed to initialize\nSDL Error: '%s'\n", SDL_GetError());
-        return 1;
-    }
-    if(!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)){
-        printf("Error: SDL_image failed to initialize\nSDL Error: '%s'\n", IMG_GetError());
-        SDL_Quit();
-        return 1;
-    }
-
-    /* CREATE WINDOW */
-    SDL_Window *window = SDL_CreateWindow(
-        WINDOW_TITLE,
-        SDL_WINDOWPOS_UNDEFINED,
-        SDL_WINDOWPOS_UNDEFINED,
-        SCREEN_WIDTH,
-        SCREEN_HEIGHT,
-        0
-    );
-    if(!window){
-        printf("Error: Failed to open window\nSDL Error: '%s'\n", SDL_GetError());
-        return 1;
-    }
-
-    /*CREATE RENDER*/
-    SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    if(!renderer){
-        printf("Error: Failed to create renderer\nSDL Error: '%s'\n", SDL_GetError());
-        return 1;
-    }
-
-    /*------------------*/
-    // Cargar managers
-    TextureManager* textureManager = TextureManager::getInstance();
-    if (!textureManager->loadTexturesFromDirectory("res/textures", renderer)) {
-        SDL_DestroyRenderer(renderer);
-        SDL_DestroyWindow(window);
-        SDL_Quit();
+    Game* game = Game::getInstance();
+    if (!game->init()) {
+        printf("Error: Failed to initialize game\n");
         return -1;
     }
-    EntityManager* entityManager = EntityManager::getInstance();
 
-
-    // Cargar mapa
-    Map map;
-    map.loadMapFromFile("res/levels/testmap.map", renderer);
-
-    Player* player = Player::getInstance();
-    bool debug_mode = false;
-    Scene* scene = Scene::getInstance();
-
-    entityManager->printEntities();
-
-
-    /*-------------------*/
-
-    // Bucle principal
-    int quit = 0;
-    SDL_Event e;
-    // Obtener el estado del teclado
-    const Uint8* keyState;
-
-    while (!quit) {
-        // Manejar eventos
-        while (SDL_PollEvent(&e) != 0) {
-            if (e.type == SDL_QUIT) {
-                quit = 1;
-            }
-            if (e.type == SDL_KEYDOWN && keyState[SDL_SCANCODE_M]) {
-                debug_mode = !debug_mode;
-            }
-        }
-
-        // Obtener el estado del teclado
-        keyState = SDL_GetKeyboardState(NULL);
-
-        // actualizar estado del jugador
-        Vector2D direction(0, 0);
-
-        // Movimiento del sprite con el teclado
-        if (keyState[SDL_SCANCODE_UP]) {
-            direction += Vector2D(0, -1);
-        }
-        if (keyState[SDL_SCANCODE_DOWN]) {
-            direction += Vector2D(0, 1);
-        }
-        if (keyState[SDL_SCANCODE_LEFT]) {
-            direction += Vector2D(-1, 0);
-        }
-        if (keyState[SDL_SCANCODE_RIGHT]) {
-            direction += Vector2D(1, 0);
-        }
-
-        player->move(direction, map.getTileMap(0));
-
-        scene->render(renderer, map, entityManager, debug_mode);
-
-        // Actualizar la pantalla
-        SDL_RenderPresent(renderer);
-        // Retraso para no consumir mucho CPU
-        SDL_Delay(16); // Aproximadamente 60 FPS
-    }
-
-    // Limpiar y cerrar SDL
-    // Revisar después si hay leakeos de memoria
-    textureManager->clearAllTextures();
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    IMG_Quit();
-    SDL_Quit();
-
-    
+    game->run();
+    game->shutdown();
 
     return 0;
 }
