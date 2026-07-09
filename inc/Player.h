@@ -2,6 +2,7 @@
 #define PLAYER_H
 
 #include "Entity.h"
+#include "InputManager.h"
 
 
 class Player : public Entity {
@@ -24,7 +25,7 @@ class Player : public Entity {
             Vector2D(10, 0)              // HITBOX OFFSET
         ) {
             health = 100;               // HEALTH
-            speed = 4;                  // SPEED
+            speed = 400;                  // SPEED
         }
 
         static Player* instance;
@@ -45,14 +46,14 @@ class Player : public Entity {
             return instance;
         }
 
-        void move(Vector2D& direction, const TileMap& tileMap);
+        void move(Vector2D& direction, float deltaTime, const TileMap& tileMap);
 
         void render(SDL_Renderer* renderer) {
             Entity::render(renderer);
         }
 
+        void update(float deltaTime, const TileMap& tileMap) override;
 
-        
 };
 
 #endif

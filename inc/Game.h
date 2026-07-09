@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include <time.h>
 
+#include "../inc/InputManager.h"
 #include "../inc/Entity.h"
 #include "../inc/Player.h"
 #include "../inc/Scene.h"
@@ -29,6 +30,7 @@ class Game {
         SDL_Event event;
 
         // Managers
+        InputManager* inputManager = InputManager::getInstance();
         TextureManager* textureManager = TextureManager::getInstance();
         EntityManager* entityManager = EntityManager::getInstance();
         Scene* scene = Scene::getInstance();

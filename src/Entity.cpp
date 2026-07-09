@@ -72,7 +72,9 @@ Entity* EntityManager::createEntity(EntityType type, Vector2D position) {
  */
 void EntityManager::updateEntities(float deltaTime, const TileMap& tileMap) {
     for (auto& pair : entityMap) {
-        // TODO: IMPLEMENTAR LÓGICA DE ACTUALIZACIÓN DE ENTIDADES
+        if (pair.second != nullptr) {
+            pair.second->update(deltaTime, tileMap);
+        }
     }
 }
 
@@ -123,13 +125,19 @@ void EntityManager::printEntities() {
  * @param speed 
  * @param tileMap 
  */
- void Entity::move(Vector2D& direction, float speed, const TileMap& tileMap) {
-	Vector2D newPosition = getPosition() + direction.normalize() * speed;
+void Entity::move(Vector2D& direction, float speed, float dt, const TileMap& tileMap){
+    if (direction.magnitude() == 0.0f)
+        return;
 
-	Hitbox newHitbox = getHitbox();
-	newHitbox.setPosition(newPosition);
+    Vector2D displacement = direction.normalize() * speed * dt;
 
-	if (direction.magnitude() > 0.0f && !checkMapEntityCollision(newHitbox, tileMap)) {
-		setPosition(newPosition);
-	}
+    Vector2D newPosition = getPosition() + displacement;
+
+    Hitbox newHitbox = getHitbox();
+    newHitbox.setPosition(newPosition);
+
+    if (!checkMapEntityCollision(newHitbox, tileMap))
+    {
+        setPosition(newPosition);
+    }
 }

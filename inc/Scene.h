@@ -8,6 +8,9 @@
 class Scene {
     private:
         static Scene* instance;
+
+        Map* currentMap;
+
         Scene() = default;
         ~Scene() = default;
     public:
@@ -18,7 +21,15 @@ class Scene {
             return instance;
         }
 
-        void render(SDL_Renderer* renderer, Map& map, EntityManager* entityManager, bool debugMode);
+        void setMap(Map* map) {
+            currentMap = map;
+        }
+
+        Map& getMap() {
+            return *currentMap;
+        }
+
+        void render(SDL_Renderer* renderer, EntityManager* entityManager, bool debugMode);
 };
 
 #endif

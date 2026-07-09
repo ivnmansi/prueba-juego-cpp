@@ -9,6 +9,17 @@ Game* Game::getInstance(){
     return instance;
 }
 
+void Game::HandleEvents()
+{
+    while (SDL_PollEvent(&event))
+    {
+        if (event.type == SDL_QUIT)
+            running = false;
+    }
+
+    inputManager->update();
+}
+
 /**
  * @brief Inits SDL libraries
  * 
@@ -42,7 +53,7 @@ bool Game::init(){
     }
 
     /*CREATE RENDER*/
-    this->renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    this->renderer = SDL_CreateRenderer(window,-1,SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if(!renderer){
         printf("Error: Failed to create renderer\nSDL Error: '%s'\n", SDL_GetError());
         return false;
@@ -60,6 +71,23 @@ bool Game::init(){
     return true;
 }
 
+void Game::Update(float dt)
+{
+    entityManager->updateEntities(dt, Scene::getInstance()->getMap().getTileMap(0));
+
+    if (inputManager->isKeyPressed(SDL_SCANCODE_M))
+        debugMode = !debugMode;
+}
+
+void Game::Render()
+{
+    // Renderizar el mapa y las entidades
+    scene->render(renderer, entityManager, debugMode);
+
+    // Actualizar la pantalla
+    SDL_RenderPresent(renderer);
+}
+
 /**
  * @brief runs the main game loop
  * 
@@ -68,51 +96,25 @@ void Game::run(){
     /* LOAD MAP */
     Map map;
     map.loadMapFromFile("res/levels/testmap.map", renderer);
-    Player* player = Player::getInstance();
+    Scene::getInstance()->setMap(&map);
+
     entityManager->printEntities();
 
-    /* HACER INPUTMANAGER */
-    const Uint8* keyState;
-
+    Uint64 last = SDL_GetPerformanceCounter();
     while (this->running) {
+        // delta time calculation
+        Uint64 now = SDL_GetPerformanceCounter();
+        deltaTime = (float)(now - last) / SDL_GetPerformanceFrequency();
+        last = now;
+
         // Manejar eventos
-        while (SDL_PollEvent(&this->event) != 0) {
-            if (this->event.type == SDL_QUIT) {
-                this->running = false;
-            }
-            if (this->event.type == SDL_KEYDOWN && keyState[SDL_SCANCODE_M]) {
-                this->debugMode = !this->debugMode;
-            }
-        }
+        HandleEvents();
 
-        // Obtener el estado del teclado
-        keyState = SDL_GetKeyboardState(NULL);
+        // Actualizar el juego
+        Update(deltaTime);
 
-        // actualizar estado del jugador
-        Vector2D direction(0, 0);
-
-        // Movimiento del sprite con el teclado
-        if (keyState[SDL_SCANCODE_UP]) {
-            direction += Vector2D(0, -1);
-        }
-        if (keyState[SDL_SCANCODE_DOWN]) {
-            direction += Vector2D(0, 1);
-        }
-        if (keyState[SDL_SCANCODE_LEFT]) {
-            direction += Vector2D(-1, 0);
-        }
-        if (keyState[SDL_SCANCODE_RIGHT]) {
-            direction += Vector2D(1, 0);
-        }
-
-        player->move(direction, map.getTileMap(0));
-
-        scene->render(renderer, map, entityManager, this->debugMode);
-
-        // Actualizar la pantalla
-        SDL_RenderPresent(renderer);
-        // Retraso para no consumir mucho CPU
-        SDL_Delay(16); // Aproximadamente 60 FPS
+        // Renderizar el juego
+        Render();
     }
 }
 

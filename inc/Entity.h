@@ -75,6 +75,8 @@ class Hitbox{
             };
         }
 
+        void update(float deltaTime, const TileMap& tileMap);
+
 
 
     
@@ -147,7 +149,9 @@ public:
 
     void render(SDL_Renderer* renderer);
 
-    void move(Vector2D& direction, float speed, const TileMap& tileMap);
+    void move(Vector2D& direction, float speed, float dt, const TileMap& tileMap);
+
+    virtual void update(float deltaTime, const TileMap& tileMap){}
 };
 
 /**

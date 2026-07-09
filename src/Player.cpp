@@ -8,9 +8,9 @@ Player* Player::instance = nullptr;
  * @param dx 
  * @param dy 
  */
-void Player::move(Vector2D& direction, const TileMap& tileMap){
+void Player::move(Vector2D& direction, float deltaTime, const TileMap& tileMap){
     
-    Entity::move(direction, speed, tileMap);
+    Entity::move(direction, speed, deltaTime, tileMap);
     
     if(direction.x > 0 && direction.y == 0){
         setTextureID("player_right");
@@ -36,4 +36,24 @@ void Player::move(Vector2D& direction, const TileMap& tileMap){
     else if(direction.x < 0 && direction.y < 0){
         setTextureID("player_up_left");
     }
+}
+
+void Player::update(float deltaTime, const TileMap& tileMap){
+    Vector2D direction;
+
+    auto& input = *InputManager::getInstance();
+
+    if (input.isKeyHeld(SDL_SCANCODE_UP))
+        direction.y--;
+
+    if (input.isKeyHeld(SDL_SCANCODE_DOWN))
+        direction.y++;
+
+    if (input.isKeyHeld(SDL_SCANCODE_LEFT))
+        direction.x--;
+
+    if (input.isKeyHeld(SDL_SCANCODE_RIGHT))
+        direction.x++;
+
+    move(direction, deltaTime, tileMap);
 }
