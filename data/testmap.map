@@ -4,10 +4,14 @@ background=fondo_prueba
 width=20
 height=20
 
+[entity]
+type=ENTITY_PLAYER
+position=2,2
+
 [layer_0]
 texture=collition_tiles
 1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0
+1 1 1 2 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0
 0 1 0 0 0 1 1 1 1 0 0 0 1 1 1 1 1 0 1 0
 0 1 0 1 0 1 0 0 1 1 1 0 1 0 0 0 1 0 1 0
 0 1 0 1 0 1 0 1 1 0 1 0 1 0 1 1 1 0 1 0

@@ -2,6 +2,13 @@
 #include "../inc/Entity.h"
 #include "../inc/TileMap.h"
 
+/**
+ * @brief Checks collision between an entity's hitbox and the tile map. It checks the tiles directly below the entity's hitbox for collisions or triggers. Doesn't handle trigger, calls the trigger manager
+ * 
+ * @param entityHitbox The hitbox of the entity to check for collisions
+ * @param tileMap The tile map to check for collisions
+ * @return true if there is a collision, false otherwise
+ */
 bool checkMapEntityCollision(const Hitbox& entityHitbox, const TileMap& tileMap){
     // colisions with the map are based on where the entity steps rather than the entire hitbox
     int left = entityHitbox.getX() / TILE_SIZE;
@@ -20,7 +27,5 @@ bool checkMapEntityCollision(const Hitbox& entityHitbox, const TileMap& tileMap)
             SDL_Log("Trigger event detected at tile (%d, %d) with trigger type %d", x, bottom, tileMap.getTileType(tile.id).triggerType);
         }
     }
-
-    
     return false;
 }

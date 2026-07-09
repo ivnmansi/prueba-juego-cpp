@@ -12,6 +12,12 @@
 #include "Collision.h"
 
 class TileMap;
+class Player;
+
+typedef enum {
+    ENTITY_PLAYER,
+    ENTITY_TEST
+} EntityType;
 
 /**
  * @brief Class representing a hitbox for collision detection
@@ -90,6 +96,7 @@ class Entity{
 private:
     int id;
     std::string name;
+    EntityType type;
     Vector2D position;
     Vector2D size;
     std::string textureID;
@@ -114,7 +121,7 @@ public:
      * 
      */
     Entity(int _id, std::string _name, Vector2D _position, Vector2D _size, std::string _textureID, const Vector2D& _hitboxSize = Vector2D(0, 0), const Vector2D& _hitboxOffset = Vector2D(0, 0))
-        : id(_id), name(_name), position(_position), size(_size), textureID(_textureID), hitboxSize(_hitboxSize), hitboxOffset(_hitboxOffset){
+        : id(_id), name(_name), type(ENTITY_TEST), position(_position), size(_size), textureID(_textureID), hitboxSize(_hitboxSize), hitboxOffset(_hitboxOffset){
         if (hitboxSize.x <= 0 || hitboxSize.y <= 0) {
             hitboxSize = _size;
         }
@@ -124,6 +131,7 @@ public:
     /** GETTERS & SETTERS */
     int getId() {return id; }
     const std::string& getName() { return name; }
+    EntityType getType() { return type; }
     const Vector2D& getPosition() const { return position; }
     const Vector2D& getSize() const { return size; }
     const Hitbox& getHitbox() const { return hitbox; }
@@ -148,6 +156,7 @@ public:
  */
 class EntityManager {
     private:
+
         static EntityManager* instance;
         EntityManager() = default;
 
@@ -168,6 +177,8 @@ class EntityManager {
         void addEntity(Entity& entity);
         Entity* getEntity(int id);
         void removeEntity(int id);
+
+        Entity* createEntity(EntityType type, Vector2D position);
 
         void updateEntities(float deltaTime, const TileMap& tileMap);
         void renderEntities(SDL_Renderer* renderer);

@@ -60,7 +60,6 @@ int main(int argc, char** argv){
     Map map;
     map.loadMapFromFile("data/testmap.map", renderer);
 
-    // cargar jugador
     Player* player = Player::getInstance();
     bool debug_mode = false;
     Scene* scene = Scene::getInstance();

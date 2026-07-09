@@ -6,6 +6,7 @@
 #include <string>
 #include "Map.h"
 #include "TileMap.h"
+#include "Entity.h"
 
 class Map;
 struct SDL_Renderer;

@@ -67,6 +67,7 @@ void MapParser::loadMapFromFile(Map& map, const std::string& filePath) {
     int currentLayer = -1;
     int rowInLayer = 0;
     std::string line;
+    Entity* currentEntity = nullptr;
 
     while (std::getline(file, line)) {
         std::string sectionName;
@@ -114,7 +115,7 @@ void MapParser::loadMapFromFile(Map& map, const std::string& filePath) {
             }
         }
         // Parse [layer_N] sections
-        else if (currentLayer >= 0 && currentLayer < MAX_MAP_LAYERS) {
+        else if (currentLayer >= 0 && currentLayer < MAX_MAP_LAYERS && currentSection == "layer_" + std::to_string(currentLayer)) {
             std::string key, value;
             
             // Check for texture key
@@ -140,6 +141,49 @@ void MapParser::loadMapFromFile(Map& map, const std::string& filePath) {
                     col++;
                 }
                 rowInLayer++;
+            }
+        }
+        //parse [entity] sections
+        else if(currentSection == "entity"){
+            std::string key, value;
+            if(parseKeyValue(line, key, value)){
+                if(key == "type"){
+                    int t = -1;
+                    try {
+                        t = std::stoi(value);
+                    } catch(...) {
+                        // try named types
+                        if (value == "ENTITY_PLAYER") t = ENTITY_PLAYER;
+                        else if (value == "ENTITY_TEST") t = ENTITY_TEST;
+                        else {
+                            SDL_Log("Invalid entity type: %s", value.c_str());
+                            continue;
+                        }
+                    }
+                    currentEntity = EntityManager::getInstance()->createEntity((EntityType)t, Vector2D(0,0));
+                    if(currentEntity){
+                        SDL_Log("Entity created successfully");
+                    }
+                    else{
+                        SDL_Log("Failed to create entity of type %s", value.c_str());
+                    }
+                }
+                else if(key == "position"){
+                    if(currentEntity == nullptr){
+                        SDL_Log("Position specified but no current entity to apply to");
+                        continue;
+                    }
+                    size_t commaPos = value.find(',');
+                    if(commaPos != std::string::npos){
+                        try{
+                            float x = std::stof(value.substr(0, commaPos));
+                            float y = std::stof(value.substr(commaPos + 1));
+                            currentEntity->setPosition(Vector2D(x * TILE_SIZE - TILE_SIZE, y * TILE_SIZE - 2*TILE_SIZE));
+                        } catch(...){
+                            SDL_Log("Invalid position format: %s", value.c_str());
+                        }
+                    }
+                }
             }
         }
     }

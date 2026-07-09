@@ -4,6 +4,10 @@
 
 #include <string>
 
+/**
+ * @brief Construct a new Map:: Map object
+ * 
+ */
 Map::Map() {
     mapName = "default";
     mapBackground = "default";
@@ -14,21 +18,41 @@ Map::Map() {
     }
 }
 
+/**
+ * @brief Destroy the Map:: Map object
+ * 
+ */
 Map::~Map() {
     delete[] tileMap;
 }
 
+/**
+ * @brief Sets the name of the map
+ * 
+ * @param name Name of the map
+ */
 void Map::setMapName(const std::string& name) {
     mapName = name;
 }
 
+/**
+ * @brief Sets the background texture of the map
+ * 
+ * @param background Name of the background texture
+ */
 void Map::setMapBackground(const std::string& background) {
     mapBackground = background;
 }
 
+/**
+ * @brief Sets the size of the map
+ * 
+ * @param size Size of the map
+ */
 void Map::setMapSize(const Vector2D& size) {
     mapSize = size;
 }
+
 
 std::string Map::getMapBackground() {
     return mapBackground;
