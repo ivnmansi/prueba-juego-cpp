@@ -7,7 +7,7 @@ EXEC = game.out
 
 SRC_DIR = src
 OBJ_DIR = obj
-BUILD_DIR = build
+BUILD_DIR = .
 SRC_FILES = main.cpp $(wildcard $(SRC_DIR)/*.cpp)
 OBJ_FILES = $(patsubst %.cpp,$(OBJ_DIR)/%.o,$(SRC_FILES))
 

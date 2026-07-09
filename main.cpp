@@ -47,7 +47,7 @@ int main(int argc, char** argv){
     /*------------------*/
     // Cargar managers
     TextureManager* textureManager = TextureManager::getInstance();
-    if (!textureManager->loadTexturesFromDirectory("img", renderer)) {
+    if (!textureManager->loadTexturesFromDirectory("res/textures", renderer)) {
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
         SDL_Quit();
@@ -58,7 +58,7 @@ int main(int argc, char** argv){
 
     // Cargar mapa
     Map map;
-    map.loadMapFromFile("data/testmap.map", renderer);
+    map.loadMapFromFile("res/levels/testmap.map", renderer);
 
     Player* player = Player::getInstance();
     bool debug_mode = false;
