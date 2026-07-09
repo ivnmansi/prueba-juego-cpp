@@ -1,6 +1,4 @@
 #include "../inc/Collision.h"
-#include "../inc/Entity.h"
-#include "../inc/TileMap.h"
 
 /**
  * @brief Checks collision between an entity's hitbox and the tile map. It checks the tiles directly below the entity's hitbox for collisions or triggers. Doesn't handle trigger, calls the trigger manager

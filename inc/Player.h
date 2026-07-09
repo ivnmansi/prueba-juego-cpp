@@ -48,8 +48,8 @@ class Player : public Entity {
 
         void move(Vector2D& direction, float deltaTime, const TileMap& tileMap);
 
-        void render(SDL_Renderer* renderer) {
-            Entity::render(renderer);
+        void render(SDL_Renderer* renderer, const Camera& camera) {
+            Entity::render(renderer, camera);
         }
 
         void update(float deltaTime, const TileMap& tileMap) override;

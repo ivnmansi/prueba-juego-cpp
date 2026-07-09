@@ -83,10 +83,10 @@ void EntityManager::updateEntities(float deltaTime, const TileMap& tileMap) {
  * 
  * @param renderer 
  */
-void EntityManager::renderEntities(SDL_Renderer* renderer) {
+void EntityManager::renderEntities(SDL_Renderer* renderer, const Camera& camera) {
     for (auto& pair : entityMap) {
         if (pair.second != nullptr) {
-            pair.second->render(renderer);
+            pair.second->render(renderer, camera);
         }
     }
 }
@@ -95,10 +95,11 @@ void EntityManager::renderEntities(SDL_Renderer* renderer) {
  * @brief Renders the entity using the provided SDL_Renderer. If the entity has a valid texture ID, it draws the texture at the entity's position and size.
  * 
  * @param renderer 
+ * @param camera 
  */
-void Entity::render(SDL_Renderer* renderer) {
+void Entity::render(SDL_Renderer* renderer, const Camera& camera) {
     if(!textureID.empty()){
-        TextureManager::getInstance()->drawTexture(getTextureID(), renderer, getPosition(), getSize());
+        TextureManager::getInstance()->drawTexture(getTextureID(), renderer, camera.worldToScreen(getPosition()), getSize());
     }
 }
 

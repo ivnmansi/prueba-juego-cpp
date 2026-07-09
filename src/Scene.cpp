@@ -10,6 +10,6 @@ void Scene::render(SDL_Renderer* renderer, Camera& camera, EntityManager* entity
     // Renderizar el mapa
     currentMap->renderBackground(renderer, camera);
     currentMap->renderLayersBelowPlayer(renderer, camera, debugMode);
-    entityManager->renderEntities(renderer);
+    entityManager->renderEntities(renderer, camera);
     currentMap->renderLayersAbovePlayer(renderer, camera);
 }

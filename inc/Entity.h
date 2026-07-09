@@ -10,6 +10,7 @@
 #include "Vector2D.h"
 #include "TextureManager.h"
 #include "Collision.h"
+#include "Camera.h"
 
 class TileMap;
 class Player;
@@ -147,7 +148,7 @@ public:
     void setHitbox(const Hitbox& _hitbox) { hitbox = _hitbox; }
 
 
-    void render(SDL_Renderer* renderer);
+    void render(SDL_Renderer* renderer, const Camera& camera);
 
     void move(Vector2D& direction, float speed, float dt, const TileMap& tileMap);
 
@@ -185,7 +186,7 @@ class EntityManager {
         Entity* createEntity(EntityType type, Vector2D position);
 
         void updateEntities(float deltaTime, const TileMap& tileMap);
-        void renderEntities(SDL_Renderer* renderer);
+        void renderEntities(SDL_Renderer* renderer, const Camera& camera);
 
         void clearEntities();
 
