@@ -182,7 +182,7 @@ public:
 
     void render(SDL_Renderer* renderer, const Camera& camera);
 
-    void move(Vector2D& direction, float speed, float dt, const TileMap& tileMap);
+    void move(const Vector2D& direction, float speed, float dt, const TileMap& tileMap);
 
     void update(float deltaTime, const TileMap& tileMap);
 

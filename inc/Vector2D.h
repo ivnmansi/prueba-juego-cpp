@@ -28,7 +28,7 @@ public:
 
     bool operator==(const Vector2D& v2);
 
-    float magnitude();
+    float magnitude() const;
     Vector2D normalize() const;
     
     Vector2D& multiplyByScalar(const float scalar);

@@ -3,77 +3,48 @@
 
 Player* Player::instance = nullptr;
 
-// LO A CONTINUACION ESTA FEISIMO. HAY QUE REFACTORIZARLO EN UN FUTURO Y DEJARLO GENERICO PARA UN CLASS CHARACTER
-
-/**
- * @brief 
- * 
- * @param dx 
- * @param dy 
- */
-void Player::move(Vector2D& movement, float deltaTime, const TileMap& tileMap){
-    Entity::move(movement, speed, deltaTime, tileMap);
-
-    if(movement.x > 0 && movement.y == 0)
-        direction = PLAYER_RIGHT;
-    else if(movement.x < 0 && movement.y == 0)
-        direction = PLAYER_LEFT;
-    else if(movement.y > 0 && movement.x == 0)
-        direction = PLAYER_DOWN;
-    else if(movement.y < 0 && movement.x == 0)
-        direction = PLAYER_UP;
-    else if(movement.x > 0 && movement.y > 0)
-        direction = PLAYER_DOWN_RIGHT;
-    else if(movement.x < 0 && movement.y > 0)
-        direction = PLAYER_DOWN_LEFT;
-    else if(movement.x > 0 && movement.y < 0)
-        direction = PLAYER_UP_RIGHT;
-    else if(movement.x < 0 && movement.y < 0)
-        direction = PLAYER_UP_LEFT;
-
-    updateTexture();
-}
 
 void Player::updateTexture(){
-    if(state == PLAYER_IDLE){
-        if(direction == PLAYER_DOWN)
+    if(state == IDLE){
+        if(direction == DOWN)
             getSprite().setTexture("player_down_idle");
-        else if(direction == PLAYER_UP)
+        else if(direction == UP)
             getSprite().setTexture("player_up_idle");
-        else if(direction == PLAYER_LEFT)
+        else if(direction == LEFT)
             getSprite().setTexture("player_left_idle");
-        else if(direction == PLAYER_RIGHT)
+        else if(direction == RIGHT)
             getSprite().setTexture("player_right_idle");
-        else if(direction == PLAYER_DOWN_RIGHT)
+        else if(direction == DOWN_RIGHT)
             getSprite().setTexture("player_down_right_idle");
-        else if(direction == PLAYER_DOWN_LEFT)
+        else if(direction == DOWN_LEFT)
             getSprite().setTexture("player_down_left_idle");
-        else if(direction == PLAYER_UP_RIGHT)
+        else if(direction == UP_RIGHT)
             getSprite().setTexture("player_up_right_idle");
-        else if(direction == PLAYER_UP_LEFT)
+        else if(direction == UP_LEFT)
             getSprite().setTexture("player_up_left_idle");
     }
-    if(state == PLAYER_WALKING){
-        if(direction == PLAYER_DOWN)
+    if(state == WALKING){
+        if(direction == DOWN)
             getSprite().setTexture("player_down_walking");
-        else if(direction == PLAYER_UP)
+        else if(direction == UP)
             getSprite().setTexture("player_up_walking");
-        else if(direction == PLAYER_LEFT)
+        else if(direction == LEFT)
             getSprite().setTexture("player_left_walking");
-        else if(direction == PLAYER_RIGHT)
+        else if(direction == RIGHT)
             getSprite().setTexture("player_right_walking");
-        else if(direction == PLAYER_DOWN_RIGHT)
+        else if(direction == DOWN_RIGHT)
             getSprite().setTexture("player_down_right_walking");
-        else if(direction == PLAYER_DOWN_LEFT)
+        else if(direction == DOWN_LEFT)
             getSprite().setTexture("player_down_left_walking");
-        else if(direction == PLAYER_UP_RIGHT)
+        else if(direction == UP_RIGHT)
             getSprite().setTexture("player_up_right_walking");
-        else if(direction == PLAYER_UP_LEFT)
+        else if(direction == UP_LEFT)
             getSprite().setTexture("player_up_left_walking");
     }
 }
 
-void Player::onUpdate(float deltaTime, const TileMap& tileMap){
+
+Vector2D Player::movementLogic(){
     Vector2D movement;
 
     auto& input = *InputManager::getInstance();
@@ -91,13 +62,13 @@ void Player::onUpdate(float deltaTime, const TileMap& tileMap){
         movement.x++;
 
     if (movement.x == 0 && movement.y == 0){
-        state = PLAYER_IDLE;
+        state = IDLE;
     }
     else {
-        state = PLAYER_WALKING;
+        state = WALKING;
     }
 
-    move(movement, deltaTime, tileMap);
+    return movement;
 }
 
 // EN UN FUTURO QUE SE LEA ESTO QUIZA DE UN JSON

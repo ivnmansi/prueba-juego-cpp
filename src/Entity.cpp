@@ -137,7 +137,7 @@ void EntityManager::printEntities() {
  * @param speed 
  * @param tileMap 
  */
-void Entity::move(Vector2D& direction, float speed, float dt, const TileMap& tileMap){
+void Entity::move(const Vector2D& direction, float speed, float dt, const TileMap& tileMap){
     if (direction.magnitude() == 0.0f)
         return;
 

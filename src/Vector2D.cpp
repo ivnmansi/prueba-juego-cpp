@@ -77,7 +77,7 @@ bool Vector2D::operator==(const Vector2D& v2){
         return (this->x == v2.x && this->y == v2.y);
 }
 
-float Vector2D::magnitude(){
+float Vector2D::magnitude() const {
     return sqrt(x * x + y * y);
 }
 
