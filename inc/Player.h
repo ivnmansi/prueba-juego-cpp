@@ -4,9 +4,34 @@
 #include "Entity.h"
 #include "InputManager.h"
 
+/**
+ * TODO: LAS ANIMACIONES POR MOVIMIENTO HAY QUE DEJARLAS MAS GENERICAS
+ * PARA QUE FUNCIONE NO SOLO CON EL PLAYER
+ * QUIZA HACER CLASS CHARACTER O ALGO ASI
+ */
+
+typedef enum {
+    PLAYER_IDLE,
+    PLAYER_WALKING,
+    PLAYER_RUNNING
+} State;
+
+typedef enum {
+    PLAYER_UP,
+    PLAYER_UP_RIGHT,
+    PLAYER_UP_LEFT,
+    PLAYER_RIGHT,
+    PLAYER_LEFT,
+    PLAYER_DOWN,
+    PLAYER_DOWN_RIGHT,
+    PLAYER_DOWN_LEFT
+} Direction;
 
 class Player : public Entity {
     private:
+
+        State state;
+        Direction direction;
 
         int health;
         float speed;
@@ -20,17 +45,22 @@ class Player : public Entity {
             std::string("Player"),      // NAME
             Vector2D(0,0),              // POSITION
             Vector2D(40,80),            // SIZE
-            std::string("player_down"), // TEXTURE ID
+            Sprite("player_down"),      // SPRITE
             Vector2D(20, 80),           // HITBOX SIZE
-            Vector2D(10, 0)              // HITBOX OFFSET
+            Vector2D(10, 0)             // HITBOX OFFSET
         ) {
-            health = 100;               // HEALTH
-            speed = 400;                  // SPEED
+            state = PLAYER_IDLE;         // STATE
+            direction = PLAYER_DOWN;     // DIRECTION
+            health = 100;                // HEALTH
+            speed = 400;                 // SPEED
+
+            SetupAnimations();
+            animator.playAnimation("player_animation");
         }
 
         static Player* instance;
-
         
+        void SetupAnimations() override;
 
     public:
         /**
@@ -45,6 +75,8 @@ class Player : public Entity {
             }
             return instance;
         }
+        
+        void updateTexture();
 
         void move(Vector2D& direction, float deltaTime, const TileMap& tileMap);
 
@@ -52,7 +84,7 @@ class Player : public Entity {
             Entity::render(renderer, camera);
         }
 
-        void update(float deltaTime, const TileMap& tileMap) override;
+        void onUpdate(float deltaTime, const TileMap& tileMap) override;
 
 };
 

@@ -98,9 +98,20 @@ void EntityManager::renderEntities(SDL_Renderer* renderer, const Camera& camera)
  * @param camera 
  */
 void Entity::render(SDL_Renderer* renderer, const Camera& camera) {
-    if(!textureID.empty()){
-        TextureManager::getInstance()->drawTexture(getTextureID(), renderer, camera.worldToScreen(getPosition()), getSize());
+    sprite.render(
+        renderer,
+        position,
+        size,
+        camera
+    );
+}
+
+void Entity::update(float deltaTime, const TileMap& tileMap) {
+    if(animator.hasAnimations()){
+        animator.update(deltaTime);
+        sprite.setSourceRect(animator.getSourceRect());
     }
+    onUpdate(deltaTime, tileMap);
 }
 
 /**

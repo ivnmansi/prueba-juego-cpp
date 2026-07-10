@@ -11,6 +11,7 @@
 #include "TextureManager.h"
 #include "Collision.h"
 #include "Camera.h"
+#include "Sprite.h"
 
 class TileMap;
 class Player;
@@ -96,24 +97,38 @@ class Hitbox{
 class EntityManager;
 
 class Entity{
+protected:
+    Sprite sprite;
+    Animator animator;
+
 private:
     int id;
     std::string name;
     EntityType type;
     Vector2D position;
     Vector2D size;
-    std::string textureID;
     Hitbox hitbox;
     Vector2D hitboxSize;
     Vector2D hitboxOffset;
-
 
 public:
     /**
      * @brief Construct a new Entity object
      * 
      */
-    Entity() : id(0), name("NULL"), position(0,0), size(0,0), textureID("NULL") {
+    Entity() :
+        sprite(),
+        animator(),
+        id(0),
+        name("NULL"),
+        type(ENTITY_TEST),
+        position(0,0),
+        size(0,0),
+        hitbox(),
+        hitboxSize(0,0),
+        hitboxOffset(0,0)
+    {
+
         hitboxSize = size;
         hitboxOffset = Vector2D(0, 0);
         hitbox = Hitbox();
@@ -123,13 +138,32 @@ public:
      * @brief Construct a new Entity object
      * 
      */
-    Entity(int _id, std::string _name, Vector2D _position, Vector2D _size, std::string _textureID, const Vector2D& _hitboxSize = Vector2D(0, 0), const Vector2D& _hitboxOffset = Vector2D(0, 0))
-        : id(_id), name(_name), type(ENTITY_TEST), position(_position), size(_size), textureID(_textureID), hitboxSize(_hitboxSize), hitboxOffset(_hitboxOffset){
-        if (hitboxSize.x <= 0 || hitboxSize.y <= 0) {
-            hitboxSize = _size;
+    Entity(
+        int _id,
+        std::string _name,
+        Vector2D _position,
+        Vector2D _size,
+        Sprite _sprite,
+        const Vector2D& _hitboxSize = Vector2D(0,0),
+        const Vector2D& _hitboxOffset = Vector2D(0,0)
+    )
+    :
+        sprite(_sprite),
+        animator(),
+        id(_id),
+        name(_name),
+        type(ENTITY_TEST),
+        position(_position),
+        size(_size),
+        hitbox(_position, _hitboxSize, _hitboxOffset),
+        hitboxSize(_hitboxSize),
+        hitboxOffset(_hitboxOffset)
+        {
+            if(hitboxSize.x <= 0 || hitboxSize.y <= 0)
+            {
+                hitboxSize = _size;
+            }
         }
-        hitbox = Hitbox(_position, hitboxSize, hitboxOffset);
-    }
 
     /** GETTERS & SETTERS */
     int getId() {return id; }
@@ -138,13 +172,11 @@ public:
     const Vector2D& getPosition() const { return position; }
     const Vector2D& getSize() const { return size; }
     const Hitbox& getHitbox() const { return hitbox; }
-    std::string getTextureID() const {
-        return textureID;
-    }
+    Sprite& getSprite() { return sprite; }
 
     void setId(int _id) { id = _id; }
     void setPosition(const Vector2D& _position){position = _position;hitbox.setBounds(position, hitboxSize, hitboxOffset);}
-    void setTextureID(const std::string& _textureID) { textureID = _textureID; }
+    void setSprite(const std::string& _textureID) { sprite.setTexture(_textureID); }
     void setHitbox(const Hitbox& _hitbox) { hitbox = _hitbox; }
 
 
@@ -152,7 +184,11 @@ public:
 
     void move(Vector2D& direction, float speed, float dt, const TileMap& tileMap);
 
-    virtual void update(float deltaTime, const TileMap& tileMap){}
+    void update(float deltaTime, const TileMap& tileMap);
+
+    protected:
+        virtual void onUpdate(float deltaTime, const TileMap& tileMap) {}
+        virtual void SetupAnimations() {}
 };
 
 /**
